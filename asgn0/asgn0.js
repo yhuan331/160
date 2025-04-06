@@ -106,10 +106,29 @@ function main() {
         const area = areaTriangle(v1, v2);
         console.log("Area of triangle formed by v1 and v2:", area.toFixed(3));
       
-    
+    }  
   }
 
-  function handleDrawEvent() {
+
+function angleBetween(other1, other2) {
+    const dotProd = Vector3.dot(other1, other2);
+    const mag1 = other1.magnitude();
+    const mag2 = other2.magnitude();
+    const angleRad = Math.acos(dotProd / (mag1 * mag2));
+    const angleDeg = angleRad * (180 / Math.PI);
+    return angleDeg;
+  }
+
+function areaTriangle(v1, v2) {
+    const crossProd = Vector3.cross(v1, v2);
+    return crossProd.magnitude() / 2;
+  }
+
+
+
+  
+
+function handleDrawEvent() {
     // Read v1 values
     const x1 = parseFloat(document.getElementById("xInput1").value);
     const y1 = parseFloat(document.getElementById("yInput1").value);
@@ -129,20 +148,3 @@ function main() {
     drawVector(v1, "red");
     drawVector(v2, "blue");
   }
-
-  function angleBetween(other1, other2) {
-    const dotProd = Vector3.dot(other1, other2);
-    const mag1 = other1.magnitude();
-    const mag2 = other2.magnitude();
-    const angleRad = Math.acos(dotProd / (mag1 * mag2));
-    const angleDeg = angleRad * (180 / Math.PI);
-    return angleDeg;
-  }
-
-  function areaTriangle(v1, v2) {
-    const crossProd = Vector3.cross(v1, v2);
-    return crossProd.magnitude() / 2;
-  }
-
-}
-  

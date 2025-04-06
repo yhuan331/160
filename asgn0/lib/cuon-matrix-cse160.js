@@ -143,7 +143,7 @@ class Vector3 {
     */
   magnitude() {
       // Insert your code here.
-      let m = 0; // Modify this line to calculate this vector's magnitude.
+      //let m = 0; // Modify this line to calculate this vector's magnitude.
 
         const x = this.elements[0];
         const y = this.elements[1];
