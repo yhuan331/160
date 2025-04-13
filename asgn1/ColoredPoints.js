@@ -488,6 +488,14 @@ function drawTreeScene() {
   pushTri(0.1, 0.95, 0.03, [1.0, 1.0, 1.0, 1.0]);
   pushTri(0.6, 0.85, 0.04, [1.0, 1.0, 1.0, 1.0]);
 
+  for (let i = 0; i < 10; i++) {
+    let x = Math.random() * 2 - 1;        // from -1 to 1
+    let y = Math.random() * 0.5 + 0.5;    // from 0.5 to 1.0 (top half of canvas)
+    let size = Math.random() * 0.03 + 0.02; // between 0.02 and 0.05
+    pushTri(x, y, size, [1.0, 1.0, 1.0, 1.0]);
+  }
+  
+
   // renderAllShapes();
 
 
