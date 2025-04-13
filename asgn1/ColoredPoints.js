@@ -277,6 +277,7 @@ let g_selectColor = [1.0, 1.0, 1.0, 1.0]; // Default color is white
 let g_selectedSize = 5;
 let g_selectedType = POINT; // Default is point
 let g_selectedSegments = 10; 
+let g_sprayMode = false; // spray mode toggle
 
 
 
@@ -291,10 +292,16 @@ function addActionForHtmlUI() {
   document.getElementById ('sizeSlide').addEventListener('mouseup', function() {g_selectedSize = this.value;});
 
   document.getElementById ('clearButton').onclick = function() {g_shapesList = []; renderAllShapes();};
+  document.getElementById ('undo').onclick = function() {g_shapesList.pop(); renderAllShapes();};
+  document.getElementById("sprayButton").onclick = function () {
+    g_sprayMode = !g_sprayMode; // toggle on/off
+    sendTextToHTML(g_sprayMode ? "Spray mode ON" : "Spray mode OFF", "numdot");
+  };
 
-  document.getElementById ('pointButton').onclick = function() {g_selectedType = POINT};
-  document.getElementById ('triangleButton').onclick = function() {g_selectedType = TRIANGLE};
-  document.getElementById ('circleButton').onclick = function() {g_selectedType = CIRCLE};
+
+  document.getElementById ('pointButton').onclick = function() {g_selectedType = POINT; g_sprayMode = false;};
+  document.getElementById ('triangleButton').onclick = function() {g_selectedType = TRIANGLE;g_sprayMode = false;};
+  document.getElementById ('circleButton').onclick = function() {g_selectedType = CIRCLE; g_sprayMode = false;};
 
   document.getElementById('segmentSlide').addEventListener('mouseup', function() {g_selectedSegments = this.value;});
   document.getElementById("drawTreeScene").onclick = function () {
@@ -322,36 +329,48 @@ function main() {
 
 
 
-
 var g_shapesList = [];
 // var g_points = [];  // The array for the position of a mouse press
 // var g_colors = [];  // The array to store the color of a point
 // var g_size =[];
 
 function click(ev) {
+  let [x, y] = convertCoordinatesEventToGL(ev);
 
-    let [x,y] = convertCoordinatesEventToGL(ev);
+  // ✅ Handle Spray Mode first
+  if (g_sprayMode) {
+    for (let i = 0; i < 10; i++) {
+      let dx = (Math.random() - 0.5) * 0.05;
+      let dy = (Math.random() - 0.5) * 0.05;
 
-
-    let point;
-    if (g_selectedType == POINT) {
-      point = new Point();
-    } else if (g_selectedType == TRIANGLE) {
-      point = new Triangle();
-    } else {
-      point = new Circle()
-  
+      let p = new Point();
+      p.position = [x + dx, y + dy];
+      p.color = g_selectColor.slice();
+      p.size = g_selectedSize;
+      g_shapesList.push(p);
     }
 
-    point.position = [x,y];
-    point.color = g_selectColor.slice();
-    point.size = g_selectedSize;
-    point.segments = g_selectedSegments;
-    g_shapesList.push(point);
-
-    console.log("Selected type:", g_selectedType == POINT ? "Point" : "Triangle");
-    console.log("Slider size:", g_selectedSize);
     renderAllShapes();
+    return; 
+  }
+
+  let point;
+  if (g_selectedType == POINT) {
+    point = new Point();
+  } else if (g_selectedType == TRIANGLE) {
+    point = new Triangle();
+  } else if (g_selectedType == CIRCLE) {
+    point = new Circle();
+  }
+
+  point.position = [x, y];
+  point.color = g_selectColor.slice();
+  point.size = g_selectedSize;
+  point.segments = g_selectedSegments;
+  g_shapesList.push(point);
+
+  renderAllShapes();
+
 
 
     // g_points.push([x, y]);
@@ -409,75 +428,6 @@ function sendTextToHTML (text,htmlID){
     htmlElm.innerHTML = text;
 }
 
-//----
-// function drawTreeScene() {
-//  //   g_shapesList = []; // clear old drawings
-
-// //   const pushTri = (x, y, scale, color) => {
-// //     g_shapesList.push(new StaticTriangle(x, y, scale * 200.0, color)); // scale * 200 matches Triangle logic
-// //   };
-//   // Pine Trees
-//   drawPineTree(-0.9, -0.5);
-//   drawPineTree(-0.7, -0.5);
-//   drawPineTree(-0.3, -0.5);
-//   // drawPineTree(0.0, -0.5);
-//   // drawPineTree(0.3, -0.5);
-//   // drawPineTree(0.6, -0.5);
-//   // drawPineTree(0.9, -0.5);
-
-//   // moon cluster
-//   drawFixedTriangle(0.8, 0.8, 0.3, [1.0, 0.9, 0.1, 1.0]);
-//   drawFixedTriangle(0.9, 0.9, 0.3, [1.0, 0.9, 0.1, 1.0]);
-//   drawFixedTriangle(0.7, 0.9, 0.3, [1.0, 0.9, 0.1, 1.0]);
-
-//   // ☁️ Clouds (light gray)
-//   drawFixedTriangle(-0.8, 0.7, 0.2, [0.9, 0.9, 0.9, 1.0]);
-//   drawFixedTriangle(-0.7, 0.75, 0.2, [0.9, 0.9, 0.9, 1.0]);
-//   drawFixedTriangle(-0.6, 0.7, 0.2, [0.9, 0.9, 0.9, 1.0]);
-
-//   drawFixedTriangle(0.4, 0.65, 0.2, [0.9, 0.9, 0.9, 1.0]);
-//   drawFixedTriangle(0.5, 0.7, 0.2, [0.9, 0.9, 0.9, 1.0]);
-//   drawFixedTriangle(0.6, 0.68, 0.2, [0.9, 0.9, 0.9, 1.0]);
-
-//   // ✨ Stars (white, small)
-//   drawFixedTriangle(-0.9, 0.95, 0.05, [1.0, 1.0, 1.0, 1.0]);
-//   drawFixedTriangle(-0.4, 0.85, 0.04, [1.0, 1.0, 1.0, 1.0]);
-//   drawFixedTriangle(0.1, 0.95, 0.03, [1.0, 1.0, 1.0, 1.0]);
-//   drawFixedTriangle(0.6, 0.85, 0.04, [1.0, 1.0, 1.0, 1.0]);
-
-//   // renderAllShapes();
-// }
-
-// // Tree made of 3 stacked triangles
-// function drawPineTree(x, y) {
-//   drawFixedTriangle(x, y + 0.25, 0.3, [0.0, 0.5, 0.0, 1.0]);
-//   drawFixedTriangle(x, y, 0.3, [0.0, 0.5, 0.0, 1.0]);
-//   drawFixedTriangle(x, y - 0.25, 0.3, [0.0, 0.5, 0.0, 1.0]);
-
-// }
-
-// // Base triangle drawer
-// function drawFixedTriangle(x, y, scale, color) {
-//   gl.uniform4f(u_FragColor, color[0], color[1], color[2], color[3]);
-//   gl.uniform1f(u_Size, scale * 10);
-
-//   let base = [0, 0.5, -0.5, -0.5, 0.5, -0.5];
-//   let translated = [];
-//   for (let i = 0; i < base.length; i += 2) {
-//     translated.push(base[i] * scale + x);
-//     translated.push(base[i + 1] * scale + y);
-//   }
-
-//   let vertexBuffer = gl.createBuffer();
-//   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-//   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(translated), gl.DYNAMIC_DRAW);
-//   gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
-//   gl.enableVertexAttribArray(a_Position);
-//   gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-// }
-
-//-----
 function drawTreeScene() {
   g_shapesList = []; // clear old drawings
 
