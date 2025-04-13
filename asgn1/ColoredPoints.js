@@ -276,6 +276,9 @@ const CIRCLE = 2;
 let g_selectColor = [1.0, 1.0, 1.0, 1.0]; // Default color is white
 let g_selectedSize = 5;
 let g_selectedType = POINT; // Default is point
+let g_selectedSegments = 10; 
+
+
 
 function addActionForHtmlUI() {
   document.getElementById("green").onclick = function() {g_selectColor = [0.0, 1.0, 0.0, 1.0]; };
@@ -292,6 +295,9 @@ function addActionForHtmlUI() {
   document.getElementById ('pointButton').onclick = function() {g_selectedType = POINT};
   document.getElementById ('triangleButton').onclick = function() {g_selectedType = TRIANGLE};
   document.getElementById ('circleButton').onclick = function() {g_selectedType = CIRCLE};
+
+  document.getElementById('segmentSlide').addEventListener('mouseup', function() {g_selectedSegments = this.value;});
+  
 }
 function main() {
 
@@ -331,12 +337,14 @@ function click(ev) {
     } else if (g_selectedType == TRIANGLE) {
       point = new Triangle();
     } else {
-      point = new Circle();
+      point = new Circle()
+  
     }
 
     point.position = [x,y];
     point.color = g_selectColor.slice();
     point.size = g_selectedSize;
+    point.segments = g_selectedSegments;
     g_shapesList.push(point);
 
     console.log("Selected type:", g_selectedType == POINT ? "Point" : "Triangle");
