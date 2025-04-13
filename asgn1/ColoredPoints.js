@@ -267,9 +267,14 @@ function connectVariablesToGLSL() {
 
 }
 
+
+const POINT = 0;
+const TRIANGLE = 1;
+
 //globals related UI elements 
 let g_selectColor = [1.0, 1.0, 1.0, 1.0]; // Default color is white
 let g_selectedSize = 5;
+let g_selectedType = POINT; // Default is point
 
 function addActionForHtmlUI() {
   document.getElementById("green").onclick = function() {g_selectColor = [0.0, 1.0, 0.0, 1.0]; };
@@ -282,6 +287,9 @@ function addActionForHtmlUI() {
   document.getElementById ('sizeSlide').addEventListener('mouseup', function() {g_selectedSize = this.value;});
 
   document.getElementById ('clearButton').onclick = function() {g_shapesList = []; renderAllShapes();};
+
+  document.getElementById ('pointButton').onclick = function() {g_selectedType = POINT};
+  document.getElementById ('triangleButton').onclick = function() {g_selectedType = TRIANGLE};
 }
 function main() {
 
@@ -314,12 +322,23 @@ function click(ev) {
 
     let [x,y] = convertCoordinatesEventToGL(ev);
 
-    //creat and store new point
-    let point = new Triangle();
+
+    let point;
+    if (g_selectedType == POINT) {
+      point = new Point();
+    } else {
+      point = new Triangle();
+    }
+
     point.position = [x,y];
     point.color = g_selectColor.slice();
     point.size = g_selectedSize;
     g_shapesList.push(point);
+
+    console.log("Selected type:", g_selectedType == POINT ? "Point" : "Triangle");
+    console.log("Slider size:", g_selectedSize);
+    renderAllShapes();
+    
 
     // g_points.push([x, y]);
 
@@ -336,7 +355,8 @@ function click(ev) {
     // } else {                         // Others
     //   g_colors.push([1.0, 1.0, 1.0, 1.0]);  // White
     // }
-    renderAllShapes();
+
+
   }
 
 function convertCoordinatesEventToGL(ev) {
