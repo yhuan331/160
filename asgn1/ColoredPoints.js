@@ -270,6 +270,7 @@ function connectVariablesToGLSL() {
 
 const POINT = 0;
 const TRIANGLE = 1;
+const CIRCLE = 2;
 
 //globals related UI elements 
 let g_selectColor = [1.0, 1.0, 1.0, 1.0]; // Default color is white
@@ -290,6 +291,7 @@ function addActionForHtmlUI() {
 
   document.getElementById ('pointButton').onclick = function() {g_selectedType = POINT};
   document.getElementById ('triangleButton').onclick = function() {g_selectedType = TRIANGLE};
+  document.getElementById ('circleButton').onclick = function() {g_selectedType = CIRCLE};
 }
 function main() {
 
@@ -326,8 +328,10 @@ function click(ev) {
     let point;
     if (g_selectedType == POINT) {
       point = new Point();
-    } else {
+    } else if (g_selectedType == TRIANGLE) {
       point = new Triangle();
+    } else {
+      point = new Circle();
     }
 
     point.position = [x,y];
@@ -338,7 +342,7 @@ function click(ev) {
     console.log("Selected type:", g_selectedType == POINT ? "Point" : "Triangle");
     console.log("Slider size:", g_selectedSize);
     renderAllShapes();
-    
+
 
     // g_points.push([x, y]);
 
