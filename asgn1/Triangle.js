@@ -54,3 +54,33 @@ function drawTriangle(vertices) {
     //return n;
   }
   
+
+  //----- new class for step 12 
+
+  class StaticTriangle {
+    constructor(x, y, size, color) {
+      this.type = 'static';
+      this.position = [x, y];
+      this.color = color;
+      this.size = size;
+    }
+  
+    render() {
+      let xy = this.position;
+      let rgba = this.color;
+      let size = this.size;
+  
+      gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
+      gl.uniform1f(u_Size, size);
+  
+      let d = size / 200.0;
+      let vertices = [
+        xy[0],     xy[1],
+        xy[0] + d, xy[1],
+        xy[0],     xy[1] + d
+      ];
+  
+      drawTriangle(vertices);
+    }
+  }
+  

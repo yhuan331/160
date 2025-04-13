@@ -297,7 +297,9 @@ function addActionForHtmlUI() {
   document.getElementById ('circleButton').onclick = function() {g_selectedType = CIRCLE};
 
   document.getElementById('segmentSlide').addEventListener('mouseup', function() {g_selectedSegments = this.value;});
-  
+  document.getElementById("drawTreeScene").onclick = function () {
+    drawTreeScene();
+  };
 }
 function main() {
 
@@ -406,3 +408,146 @@ function sendTextToHTML (text,htmlID){
     }
     htmlElm.innerHTML = text;
 }
+
+//----
+// function drawTreeScene() {
+//  //   g_shapesList = []; // clear old drawings
+
+// //   const pushTri = (x, y, scale, color) => {
+// //     g_shapesList.push(new StaticTriangle(x, y, scale * 200.0, color)); // scale * 200 matches Triangle logic
+// //   };
+//   // Pine Trees
+//   drawPineTree(-0.9, -0.5);
+//   drawPineTree(-0.7, -0.5);
+//   drawPineTree(-0.3, -0.5);
+//   // drawPineTree(0.0, -0.5);
+//   // drawPineTree(0.3, -0.5);
+//   // drawPineTree(0.6, -0.5);
+//   // drawPineTree(0.9, -0.5);
+
+//   // moon cluster
+//   drawFixedTriangle(0.8, 0.8, 0.3, [1.0, 0.9, 0.1, 1.0]);
+//   drawFixedTriangle(0.9, 0.9, 0.3, [1.0, 0.9, 0.1, 1.0]);
+//   drawFixedTriangle(0.7, 0.9, 0.3, [1.0, 0.9, 0.1, 1.0]);
+
+//   // ☁️ Clouds (light gray)
+//   drawFixedTriangle(-0.8, 0.7, 0.2, [0.9, 0.9, 0.9, 1.0]);
+//   drawFixedTriangle(-0.7, 0.75, 0.2, [0.9, 0.9, 0.9, 1.0]);
+//   drawFixedTriangle(-0.6, 0.7, 0.2, [0.9, 0.9, 0.9, 1.0]);
+
+//   drawFixedTriangle(0.4, 0.65, 0.2, [0.9, 0.9, 0.9, 1.0]);
+//   drawFixedTriangle(0.5, 0.7, 0.2, [0.9, 0.9, 0.9, 1.0]);
+//   drawFixedTriangle(0.6, 0.68, 0.2, [0.9, 0.9, 0.9, 1.0]);
+
+//   // ✨ Stars (white, small)
+//   drawFixedTriangle(-0.9, 0.95, 0.05, [1.0, 1.0, 1.0, 1.0]);
+//   drawFixedTriangle(-0.4, 0.85, 0.04, [1.0, 1.0, 1.0, 1.0]);
+//   drawFixedTriangle(0.1, 0.95, 0.03, [1.0, 1.0, 1.0, 1.0]);
+//   drawFixedTriangle(0.6, 0.85, 0.04, [1.0, 1.0, 1.0, 1.0]);
+
+//   // renderAllShapes();
+// }
+
+// // Tree made of 3 stacked triangles
+// function drawPineTree(x, y) {
+//   drawFixedTriangle(x, y + 0.25, 0.3, [0.0, 0.5, 0.0, 1.0]);
+//   drawFixedTriangle(x, y, 0.3, [0.0, 0.5, 0.0, 1.0]);
+//   drawFixedTriangle(x, y - 0.25, 0.3, [0.0, 0.5, 0.0, 1.0]);
+
+// }
+
+// // Base triangle drawer
+// function drawFixedTriangle(x, y, scale, color) {
+//   gl.uniform4f(u_FragColor, color[0], color[1], color[2], color[3]);
+//   gl.uniform1f(u_Size, scale * 10);
+
+//   let base = [0, 0.5, -0.5, -0.5, 0.5, -0.5];
+//   let translated = [];
+//   for (let i = 0; i < base.length; i += 2) {
+//     translated.push(base[i] * scale + x);
+//     translated.push(base[i + 1] * scale + y);
+//   }
+
+//   let vertexBuffer = gl.createBuffer();
+//   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+//   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(translated), gl.DYNAMIC_DRAW);
+//   gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+//   gl.enableVertexAttribArray(a_Position);
+//   gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+// }
+
+//-----
+function drawTreeScene() {
+  g_shapesList = []; // clear old drawings
+
+  const pushTri = (x, y, scale, color) => {
+    g_shapesList.push(new StaticTriangle(x, y, scale * 200.0, color)); // scale * 200 matches Triangle logic
+  };
+
+  // 🌿 Grass ground
+  for (let i = -1; i <= 1; i += 0.3) {
+    pushTri(i, -0.9, 0.25, [0.2, 0.8, 0.2, 1.0]);
+  }
+
+  
+  const drawPineTree = (x, y) => {
+    const color = [0.0, 0.5, 0.0, 1.0];
+    const scale = 0.3;
+  
+    // Tree foliage (green triangles)
+    pushTri(x, y + 0.18, scale, color); // top triangle
+    pushTri(x, y + 0.02, scale, color); // middle triangle
+    pushTri(x, y - 0.14, scale, color); // bottom triangle
+  
+    // Tree trunk (brown)
+    const brown = [0.4, 0.2, 0.1, 1.0];
+    const trunkScale = 0.15;
+    pushTri(x - 0.07, y - 0.35, trunkScale, brown); // left triangle of trunk
+    pushTri(x + 0.07, y - 0.35, trunkScale, brown); // right triangle of trunk
+  };
+  
+  
+
+   // Pine Trees
+  drawPineTree(-0.9, -0.5);
+  drawPineTree(-0.7, -0.5);
+  drawPineTree(-0.3, -0.5);
+  // drawPineTree(0.0, -0.5);
+  // drawPineTree(0.3, -0.5);
+  // drawPineTree(0.6, -0.5);
+  // drawPineTree(0.9, -0.5);
+
+  // moon cluster
+  pushTri(0.8, 0.8, 0.3, [1.0, 0.9, 0.1, 1.0]);
+  pushTri(0.9, 0.9, 0.3, [1.0, 0.9, 0.1, 1.0]);
+  pushTri(0.7, 0.9, 0.3, [1.0, 0.9, 0.1, 1.0]);
+
+  // ☁️ Clouds (light gray)
+  pushTri(-0.8, 0.7, 0.2, [0.9, 0.9, 0.9, 1.0]);
+  pushTri(-0.7, 0.75, 0.2, [0.9, 0.9, 0.9, 1.0]);
+  pushTri(-0.6, 0.7, 0.2, [0.9, 0.9, 0.9, 1.0]);
+
+  pushTri(0.4, 0.65, 0.2, [0.9, 0.9, 0.9, 1.0]);
+  pushTri(0.5, 0.7, 0.2, [0.9, 0.9, 0.9, 1.0]);
+  pushTri(0.6, 0.68, 0.2, [0.9, 0.9, 0.9, 1.0]);
+
+  // ✨ Stars (white, small)
+  pushTri(-0.9, 0.95, 0.05, [1.0, 1.0, 1.0, 1.0]);
+  pushTri(-0.4, 0.85, 0.04, [1.0, 1.0, 1.0, 1.0]);
+  pushTri(0.1, 0.95, 0.03, [1.0, 1.0, 1.0, 1.0]);
+  pushTri(0.6, 0.85, 0.04, [1.0, 1.0, 1.0, 1.0]);
+
+  // renderAllShapes();
+
+
+  // pushTri(x, y + 0.25, 0.3, [0.0, 0.5, 0.0, 1.0]);
+  // pushTri(x, y, 0.3, [0.0, 0.5, 0.0, 1.0]);
+  // pushTri(x, y - 0.25, 0.3, [0.0, 0.5, 0.0, 1.0]);
+
+
+
+  renderAllShapes();
+  sendTextToHTML("A peaceful nighttime forest with pine trees, moon, clouds, and stars.", "numdot");
+}
+
