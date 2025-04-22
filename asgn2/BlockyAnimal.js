@@ -86,35 +86,24 @@ let g_selectColor = [1.0, 1.0, 1.0, 1.0]; // Default color is white
 let g_selectedSize = 5;
 let g_selectedType = POINT; // Default is point
 let g_selectedSegments = 10; 
-// let g_sprayMode = false; // spray mode toggle
+
 let g_globalAngle = 0;
 let g_yellowAngle = 0;
 let g_magentaAngle = 0;
+let g_yellowAnimation = false; 
+let g_magentaAnimation = false;
 
  
 
 function addActionForHtmlUI() {
-  document.getElementById("green").onclick = function() {g_selectColor = [0.0, 1.0, 0.0, 1.0]; };
-  document.getElementById("red").onclick = function() {g_selectColor = [1.0, 0.0 , 0.0, 1.0]; };
+  document.getElementById("animationYellowOnButton").onclick = function() { g_yellowAnimation = true; };
+  document.getElementById("animationYellowOffButton").onclick = function() { g_yellowAnimation = false; };
 
-  document.getElementById('redSlide').addEventListener('mouseup', function() { g_selectColor[0] = this.value/100; });
-  document.getElementById('greenSlide').addEventListener('mouseup', function() { g_selectColor[1] = this.value/100; });
-  document.getElementById('blueSlide').addEventListener('mouseup', function() { g_selectColor[2] = this.value/100; });
-
-  //document.getElementById ('sizeSlide').addEventListener('mouseup', function() {g_selectedSize = this.value;});
-
-  document.getElementById ('clearButton').onclick = function() {g_shapesList = []; renderAllShapes();};
-  // document.getElementById ('undo').onclick = function() {g_shapesList.pop(); renderAllShapes();};
-  // document.getElementById("sprayButton").onclick = function () { g_sprayMode = !g_sprayMode; endTextToHTML(g_sprayMode ? "Spray mode ON" : "Spray mode OFF", "numdot");
-  // };
+  document.getElementById("animationMagentaOnButton").onclick = function() { g_magentaAnimation = true; };
+  document.getElementById("animationMagentaOffButton").onclick = function() { g_magentaAnimation = false; };
 
 
-  document.getElementById ('pointButton').onclick = function() {g_selectedType = POINT; g_sprayMode = false;};
-  document.getElementById ('triangleButton').onclick = function() {g_selectedType = TRIANGLE;g_sprayMode = false;};
-  document.getElementById ('circleButton').onclick = function() {g_selectedType = CIRCLE; g_sprayMode = false;};
-
-  // document.getElementById('segmentSlide').addEventListener('mouseup', function() {g_selectedSegments = this.value;});
-  // document.getElementById("drawTreeScene").onclick = function () {drawTreeScene(); };
+  //----- slides --------
   document.getElementById("angleSlide").addEventListener('mousemove', function() {
     g_globalAngle = this.value;
     renderAllShapes();
@@ -148,13 +137,31 @@ function main() {
 
   // Clear <canvas>
   //gl.clear(gl.COLOR_BUFFER_BIT);
-  renderAllShapes();
+   //renderAllShapes();
+  requestAnimationFrame(tick);
 }
 
-
+var g_startTime = performance.now()/1000.0 ;
+var g_seconds = performance.now()/1000.0 - g_startTime;
 
 function click(ev) {} 
 
+function tick () {
+  g_seconds = performance.now()/1000.0 - g_startTime; 
+  updateAnimationAngle();
+  renderAllShapes();
+  requestAnimationFrame(tick);
+}
+
+function updateAnimationAngle(){
+  if (g_yellowAnimation){
+    g_yellowAngle =  (45*Math.sin(g_seconds));
+  }
+  if (g_magentaAnimation){
+    g_magentaAngle =  (45*Math.sin(3*g_seconds));
+  }
+
+}
  // Draw every shape that is supposed to be in the canvas
 function renderAllShapes() {
   // Check the time at the start of this function
@@ -177,17 +184,20 @@ function renderAllShapes() {
   body.render();
 
   // Draw a left arm (yellow)
+  // AKA var yellow = new cube;
   var leftArm = new Cube();
   leftArm.color = [1, 1, 0, 1];
   leftArm.matrix.setTranslate(0, -0.5, 0.0);
   leftArm.matrix.rotate(-5, 1, 0, 0);
-  leftArm.matrix.rotate(-g_yellowAngle, 0, 0, 1);
+
+  leftArm.matrix.rotate(-g_yellowAngle, 0, 0,1);
+
   var yellowCoordinatesMat = new Matrix4 (leftArm.matrix); 
   leftArm.matrix.scale(0.25, 0.7, 0.5);
   leftArm.matrix.translate(-0.5, 0, 0);
   leftArm.render();
 
-  // Test box (pink)  
+  // Test box (pink)  AKA var magenta = new cube; 
   var box = new Cube();
   box.color = [1, 0, 1, 1];
   box.matrix = yellowCoordinatesMat;
@@ -195,10 +205,16 @@ function renderAllShapes() {
   box.matrix.rotate(g_magentaAngle, 0, 0, 1);
   box.matrix.scale(0.3, 0.3, 0.3);
   box.matrix.translate(-0.5, 0, -0.001); 
-  // box.matrix.translate(-0.1, 1.0, 0);
-  // box.matrix.rotate(-30, 1, 0, 0);
-  // box.matrix.scale(0.2, 0.4, 0.2);
   box.render();
+
+  var k = 10;
+  for (var i=1; i<k; i++){
+    var c = new Cube();
+    c.matrix.translate(-0.8, 1.9*i/k-1.0, 0 );
+    c.matrix.rotate (g_seconds * 100, 1,1,1);
+    c.matrix.scale(0.1, 0.5/k, 1/k);
+    c.render();
+  }
 
 
   var duration = performance.now() - startTime;
