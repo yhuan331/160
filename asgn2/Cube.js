@@ -27,6 +27,27 @@ class Cube{
       //top of the cube 
       drawTriangle3D([0,1,0, 0,1,1, 1,1,1])
       drawTriangle3D([0,1,0, 1,1,1, 1,1,0])
+
+
+      // === BACK FACE (z = 1)
+      gl.uniform4f(u_FragColor, rgba[0]*0.9, rgba[1]*0.9, rgba[2]*0.9, rgba[3]); // slightly dimmer
+      drawTriangle3D([1, 0, 1,   1, 1, 1,   0, 0, 1]);
+      drawTriangle3D([0, 0, 1,   1, 1, 1,   0, 1, 1]);
+
+
+      drawTriangle3D([0, 0, 0,   1, 0, 0,   0, 0, 1]);
+      drawTriangle3D([0, 0, 1,   1, 0, 0,   1, 0, 1]);
+
+      // === LEFT FACE (x = 0)
+
+      drawTriangle3D([0, 0, 0,   0, 1, 0,   0, 0, 1]);
+      drawTriangle3D([0, 0, 1,   0, 1, 0,   0, 1, 1]);
+
+      // === RIGHT FACE (x = 1)
+
+      drawTriangle3D([1, 0, 0,   1, 0, 1,   1, 1, 0]);
+      drawTriangle3D([1, 0, 1,   1, 1, 1,   1, 1, 0]);
+
     }
   }
     
