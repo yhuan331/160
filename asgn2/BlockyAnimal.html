@@ -12,7 +12,7 @@
     <p>
       
     <p id = "numdot"> XXX</p>
-
+<!-- 
       <p>
         Magenta <input type = "range" min = "-45" max = "90" value = "0" class = "slider" id = "magentaSlide">
         Animation:
@@ -23,9 +23,17 @@
         Animation:
         <button type="button" id="animationYellowOnButton">ON</button>
         <button type="button" id="animationYellowOffButton">OFF</button>
-      <p>
+      <p> -->
       Camera Angle <input type = "range" min = "0" max = "365" value = "5" class = "slider" id = "angleSlide">
       <p>
+          Joint 1 (thiegh and calf) <input type="range" min="0" max="25" value="0" class="slider" id="joint">
+        <p>
+          Joint 2 (only calf) <input type="range" min="0" max="12" value="0" class="slider" id="joint2">
+        <p>
+          Animation: 
+          <button type="button" id="animate_on">ON</button>
+          <button type="button" id="animate_off">OFF</button>
+        
 
     <script src="lib/webgl-utils.js"></script>
     <script src="lib/webgl-debug.js"></script>
@@ -35,6 +43,7 @@
     <script src="Circle.js"></script>
     <script src="Point.js"></script>
     <script src="Cube.js"></script>
+    <script src = "drawAnimal.js"></script>
     <script src="BlockyAnimal.js"></script>
 
     
