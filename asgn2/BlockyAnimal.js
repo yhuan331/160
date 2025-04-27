@@ -123,8 +123,8 @@ function addActionForHtmlUI() {
 
   //----- slides --------
   document.getElementById("angleSlide").addEventListener('mousemove', function() { g_globalAngle = this.value; renderAllShapes();});
-  document.getElementById('joint').addEventListener('mousemove', function() { g_jointAngle = this.value; renderScene();});
-  document.getElementById('joint2').addEventListener('mousemove', function() { g_jointAngle2 = this.value; renderScene();});
+  document.getElementById('joint').addEventListener('mousemove', function() { g_jointAngle = this.value; renderAllShapes();});
+  document.getElementById('joint2').addEventListener('mousemove', function() { g_jointAngle2 = this.value; renderAllShapes();});
   document.getElementById("headSlide").addEventListener('mousemove', function() { g_headAnimation = this.value; renderAllShapes();});
   document.getElementById('animate_on').onclick = function() {g_Animation = true;};
   document.getElementById('animate_off').onclick = function() {g_Animation = false;};
