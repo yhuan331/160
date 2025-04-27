@@ -177,7 +177,7 @@ function drawAnimal(){
     frontleftfoot.matrix = new Matrix4(frontleftlow.matrix);
     frontleftfoot.matrix.rotate(0, 0, 0, 1); // (optional extra movement later)
     frontleftfoot.matrix.scale(0.99,0.5,0.99); // make foot small and flat
-    frontleftfoot.matrix.translate(-0.1, -1.0, 0); // move foot down from calf
+    frontleftfoot.matrix.translate(0, -1.0, 0); // move foot down from calf
     frontleftfoot.render();
 
     // Front Right Foot
@@ -186,7 +186,7 @@ function drawAnimal(){
     frontrightfoot.matrix = new Matrix4(frontrightlow.matrix); // inherit calf matrix
     frontrightfoot.matrix.rotate(0, 0, 0, 1);
     frontrightfoot.matrix.scale(0.99, 0.5, 0.99);
-    frontrightfoot.matrix.translate(-0.1, -1.0, 0);
+    frontrightfoot.matrix.translate(0, -1.0, 0);
     frontrightfoot.render();
 
     // Back Left Foot
@@ -195,7 +195,7 @@ function drawAnimal(){
     backleftfoot.matrix = new Matrix4(backleftlow.matrix); // inherit calf matrix
     backleftfoot.matrix.rotate(0, 0, 0, 1);
     backleftfoot.matrix.scale(0.99, 0.5, 0.99);
-    backleftfoot.matrix.translate(-0.1, -1.0, 0);
+    backleftfoot.matrix.translate(0, -1.0, 0);
     backleftfoot.render();
 
     // Back Right Foot
@@ -204,7 +204,7 @@ function drawAnimal(){
     backrightfoot.matrix = new Matrix4(backrightlow.matrix); // inherit calf matrix
     backrightfoot.matrix.rotate(0, 0, 0, 1);
     backrightfoot.matrix.scale(0.99, 0.5, 0.99);
-    backrightfoot.matrix.translate(-0.1, -1.0, 0);
+    backrightfoot.matrix.translate(0, -1.0, 0);
     backrightfoot.render();
 //======== tail =============
     var tail = new Cone();
