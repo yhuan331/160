@@ -5,6 +5,7 @@ function drawAnimal(){
     var skinColor = [1.0, 0.8, 0.8, 1.0];       // Lighter pink for face
     var snoutColor = [0.93, 0.65, 0.65, 1.0];   // Darker pink for snout
     var hoofColor = [0.85, 0.6, 0.6, 1.0];      // Darker for hoofs
+    var footColor = [0.4, 0.2, 0.2, 1.0]; // Darker brown for foot
     
     // body 
     var body = new Cube();
@@ -99,6 +100,7 @@ function drawAnimal(){
     rightNostril.matrix.scale(0.03, 0.03, 0.01);  // Bigger nostril
     rightNostril.matrix.translate(1.15, 5.2, -53); // Move up too
     rightNostril.render();
+
     // upper legs ============================
     var frontleft = new Cube();
     frontleft.color = bodyColor;
@@ -169,7 +171,42 @@ function drawAnimal(){
     backrightlow.matrix.translate(.37, -1.75, 2);
     backrightlow.render();
     
+    //======== 3rd joint =====
+    var frontleftfoot = new Cube();
+    frontleftfoot.color = footColor;
+    frontleftfoot.matrix = new Matrix4(frontleftlow.matrix);
+    frontleftfoot.matrix.rotate(0, 0, 0, 1); // (optional extra movement later)
+    frontleftfoot.matrix.scale(0.99,0.5,0.99); // make foot small and flat
+    frontleftfoot.matrix.translate(-0.1, -1.0, 0); // move foot down from calf
+    frontleftfoot.render();
 
+    // Front Right Foot
+    var frontrightfoot = new Cube();
+    frontrightfoot.color = footColor;
+    frontrightfoot.matrix = new Matrix4(frontrightlow.matrix); // inherit calf matrix
+    frontrightfoot.matrix.rotate(0, 0, 0, 1);
+    frontrightfoot.matrix.scale(0.99, 0.5, 0.99);
+    frontrightfoot.matrix.translate(-0.1, -1.0, 0);
+    frontrightfoot.render();
+
+    // Back Left Foot
+    var backleftfoot = new Cube();
+    backleftfoot.color = footColor;
+    backleftfoot.matrix = new Matrix4(backleftlow.matrix); // inherit calf matrix
+    backleftfoot.matrix.rotate(0, 0, 0, 1);
+    backleftfoot.matrix.scale(0.99, 0.5, 0.99);
+    backleftfoot.matrix.translate(-0.1, -1.0, 0);
+    backleftfoot.render();
+
+    // Back Right Foot
+    var backrightfoot = new Cube();
+    backrightfoot.color = footColor;
+    backrightfoot.matrix = new Matrix4(backrightlow.matrix); // inherit calf matrix
+    backrightfoot.matrix.rotate(0, 0, 0, 1);
+    backrightfoot.matrix.scale(0.99, 0.5, 0.99);
+    backrightfoot.matrix.translate(-0.1, -1.0, 0);
+    backrightfoot.render();
+//======== tail =============
     var tail = new Cone();
     tail.color = hoofColor;
     tail.matrix.setIdentity();
