@@ -99,6 +99,17 @@ var gAnimalGlobalRotation = 0; // Camera
 var head_animation = 0;
 var g_jointAngle2 = 0; // Joint 2
 var g_Animation = false; // Joint 2
+//---- mouse movement
+var g_mouseRotateX = 0;
+var g_mouseRotateY = 0;
+var g_mouseLastX = null;
+var g_mouseLastY = null;
+var g_mouseDragging = false;
+//------ poke animaiton
+var g_pokeAnimation = false;
+var g_pokeStartTime = null;
+
+
 
  
 
@@ -114,10 +125,12 @@ function addActionForHtmlUI() {
   document.getElementById("angleSlide").addEventListener('mousemove', function() { g_globalAngle = this.value; renderAllShapes();});
   document.getElementById('joint').addEventListener('mousemove', function() { g_jointAngle = this.value; renderScene();});
   document.getElementById('joint2').addEventListener('mousemove', function() { g_jointAngle2 = this.value; renderScene();});
+  document.getElementById("headSlide").addEventListener('mousemove', function() { g_headAnimation = this.value; renderAllShapes();});
   document.getElementById('animate_on').onclick = function() {g_Animation = true;};
   document.getElementById('animate_off').onclick = function() {g_Animation = false;};
   }
 
+  //=== main function ===
 function main() {
 
   setupWebGL()
@@ -127,8 +140,35 @@ function main() {
 
   canvas.onmousedown = click;
 
-  canvas.onmousemove = function(ev) {if (ev.buttons == 1) {click(ev);}}; 
-
+  // canvas.onmousemove = function(ev) {if (ev.buttons == 1) {click(ev);}}; 
+  canvas.onmousedown = function(ev) {
+    if (ev.shiftKey) {
+      g_pokeAnimation = true;
+      g_pokeStartTime = performance.now()/1000.0;
+    } else {
+      g_mouseDragging = true;
+      g_mouseLastX = ev.clientX;
+      g_mouseLastY = ev.clientY;
+    }
+  };
+  
+  
+  canvas.onmouseup = function(ev) {
+    g_mouseDragging = false;
+  };
+  
+  canvas.onmousemove = function(ev) {
+    if (g_mouseDragging) {
+      var dx = ev.clientX - g_mouseLastX;
+      var dy = ev.clientY - g_mouseLastY;
+      g_mouseRotateX += dx * 0.5;  // Sensitivity control
+      g_mouseRotateY += dy * 0.5;
+      g_mouseLastX = ev.clientX;
+      g_mouseLastY = ev.clientY;
+      renderAllShapes(); // Redraw immediately after moving mouse
+    }
+  };
+//-------------  
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -144,11 +184,23 @@ function click(ev) {}
 //====== Tick Function ======
 function tick () {
   g_seconds = performance.now()/1000.0 - g_startTime; 
+
   updateAnimationAngle();
+
+  if (g_pokeAnimation) {
+    g_headAnimation = 20 * Math.sin(5 * g_seconds); 
+    g_mouseRotateX += 1; 
+    if (performance.now()/1000.0 - g_pokeStartTime > 3.0) {
+      g_pokeAnimation = false;
+      console.log("Poke animation ended.");
+    }
+  }
+
   renderAllShapes();
   requestAnimationFrame(tick);
 }
 
+//====== Update Animation Angle ======
 function updateAnimationAngle(){
   if (g_Animation){
     g_jointAngle =  (10*Math.sin(3*g_seconds));
@@ -156,16 +208,20 @@ function updateAnimationAngle(){
   }
 }
 
-
+//==== render all shapes ====
 function renderAllShapes() {
   var startTime = performance.now();
 
-  var globalRotMat = new Matrix4().rotate(g_globalAngle, 0, 1, 0);
+  var globalRotMat = new Matrix4();
+  globalRotMat.rotate(g_mouseRotateX, 0, 1, 0); 
+  globalRotMat.rotate(g_mouseRotateY, 1, 0, 0); 
+  globalRotMat.rotate(g_globalAngle, 0, 1, 0);  
+
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  drawAnimal();  // <-- draw the pig FIRST!
+  drawAnimal(); 
 
   var duration = performance.now() - startTime; // <-- THEN measure time
 

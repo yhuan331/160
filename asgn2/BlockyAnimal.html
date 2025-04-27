@@ -12,17 +12,26 @@
     <p>
       
     <p id = "numdot"> XXX</p>
-
-      Camera Angle <input type = "range" min = "0" max = "365" value = "5" class = "slider" id = "angleSlide">
-      <p>
-          Joint 1 (thiegh and calf) <input type="range" min="0" max="25" value="0" class="slider" id="joint">
-        <p>
-          Joint 2 (only calf) <input type="range" min="0" max="12" value="0" class="slider" id="joint2">
-        <p>
-          Animation: 
-          <button type="button" id="animate_on">ON</button>
-          <button type="button" id="animate_off">OFF</button>
-        
+    <label for="angleSlide">Camera Rotation</label>
+    <input type="range" min="0" max="365" value="5" class="slider" id="angleSlide">
+    <p>
+    
+    <label for="joint">Front Leg (Upper/Lower Joint)</label>
+    <input type="range" min="0" max="25" value="0" class="slider" id="joint">
+    <p>
+    
+    <label for="joint2">Front Leg (Lower Joint Only)</label>
+    <input type="range" min="0" max="12" value="0" class="slider" id="joint2">
+    <p>
+    
+    <label for="headSlide">Head Tilt</label>
+    <input type="range" min="0" max="14" value="0" class="slider" id="headSlide">
+    <p>
+    
+    <label> Animation Control:</label>
+    <button type="button" id="animate_on">Start </button>
+    <button type="button" id="animate_off">Stop </button>
+    
 
     <script src="lib/webgl-utils.js"></script>
     <script src="lib/webgl-debug.js"></script>
