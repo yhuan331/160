@@ -1,6 +1,6 @@
 
 function drawAnimal(){
-    // Define pig colors
+    //Define pig colors
     var bodyColor = [0.97, 0.73, 0.73, 1.0];    // Slightly brighter pink
     var skinColor = [1.0, 0.8, 0.8, 1.0];       // Lighter pink for face
     var snoutColor = [0.93, 0.65, 0.65, 1.0];   // Darker pink for snout
@@ -14,7 +14,8 @@ function drawAnimal(){
     body.render();
     
   
-    
+
+
     // head 
     var head = new Cube();
     head.color = bodyColor;
@@ -168,18 +169,14 @@ function drawAnimal(){
     backrightlow.matrix.translate(.37, -1.75, 2);
     backrightlow.render();
     
-    
-// Tail
-    var tail = new Circle();
-    tail.color = [1.0, 0.6, 0.7, 1.0]; // pink
-    tail.position = [0.0, 0.3];  // higher if needed
-    tail.size = 15.0;            // MUCH bigger to test!
-    tail.segments = 30;          // smoother
+
+    var tail = new Cone();
+    tail.color = hoofColor;
+    tail.matrix.setIdentity();
+    tail.matrix.translate(0.0, 0.14, 0.26);  // back of pig (adjust Y, Z carefully)
+    tail.matrix.scale(0.1,0.1,0.1);     // SMALL tail: width tiny, height moderate
+    tail.segments = 30; // smoother
     tail.render();
 
-}
 
-//     tail.matrix.setTranslate(0.0, 0.15, -0.42);
-//     tail.matrix.rotate(g_jointAngle, 0, 0, 1);
-//   //  tail.matrix.rotate(g_tailAngle, 0, 0, 1);
-//     tail.matrix.scale(0.05, 0.05, 0.05);
+}

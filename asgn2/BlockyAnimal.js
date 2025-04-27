@@ -157,22 +157,25 @@ function updateAnimationAngle(){
 }
 
 
-// ==== Main drawing function ======
 function renderAllShapes() {
   var startTime = performance.now();
+
   var globalRotMat = new Matrix4().rotate(g_globalAngle, 0, 1, 0);
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  gl.clear(gl.COLOR_BUFFER_BIT);
 
-  var duration = performance.now() - startTime;
-  sendTextToHTML(  "fps:" + Math.floor(1000/duration)/10, "numdot");
+  drawAnimal();  // <-- draw the pig FIRST!
 
+  var duration = performance.now() - startTime; // <-- THEN measure time
 
-  drawAnimal(); 
-
+  // Protect against divide-by-zero
+  if (duration > 0) {
+    let fps = Math.floor(1000/duration * 10) / 10;
+    sendTextToHTML("fps: " + fps, "numdot");
+  } 
 }
+
  
 
 
