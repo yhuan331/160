@@ -31,14 +31,27 @@
       <button type="button" id="animate_on">Start </button>
       <button type="button" id="animate_off">Stop </button>
       
-   <p>Note:<br>
-      Use WASD or Arrow Keys to move. <br>
-      Q to pan left and E to pan right.<br>
-      Mouse movement will also rotate the camera.<br>
-      Skybox and Floor are textured.<br>
-      Awsomeneess work : click the animation button to start the animation.<br>
-   </p>
+   <div id="rockCount" style="color:blue; font-size: 20px; margin-top: 10px;">🪨 Rocks Collected: 0 / 4</div>
+   <div id="gameMessage" style="color: green; font-size: 24px; margin-top: 10px;"></div>
 
+   <div style="margin-top: 20px; padding: 15px; border: 2px dashed #6cc; background-color: #f0faff; border-radius: 8px;">
+      <h3 style="color: #0077aa;">🌟 Welcome to Piggy's Rock Quest! 🌟</h3>
+      <p style="font-size: 16px;">
+        You're exploring a peaceful voxel world alongside your animated pig companion!<br><br>
+        
+        🧩 <strong>Your Goal:</strong> Find and collect all <strong>4 hidden rocks</strong> scattered around the world.<br><br>
+    
+        🕹️ <strong>How to Play:</strong><br>
+        ▸ Move with <strong>W A S D</strong> or <strong>Arrow Keys</strong><br>
+        ▸ Rotate camera: <strong>Q</strong> (left), <strong>E</strong> (right), or use your mouse<br>
+        ▸ <strong>Click the animation button</strong> to activate the pig's awesomeness mode!<br>
+        ▸ <strong>Get close to a rock</strong> and press <strong>C</strong> to claim it<br><br>
+    
+        ✅ Every time you collect a rock, your progress will appear at the top in blue.<br>
+        🪨 Once you collect all 4 rocks, you’ll see a surprise message!
+      </p>
+    </div>
+    
    <!-- javascript files containing functions for WebGL -->
    <script src="lib/webgl-utils.js"></script>
    <script src="lib/webgl-debug.js"></script>

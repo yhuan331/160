@@ -579,19 +579,19 @@ function drawAnimal() {
   floor.matrix.translate(-0.5, 0, -0.5);
   floor.render();
 
-  // Rocks
-  let rockPositions = [
-    [2, 0, -2],
-    [-1, 0, 3],
-    [0, 0, 0],
-    [1, 0, 1]
-  ];
-
-  for (let pos of rockPositions) {
+  
+  
+  for (let i = 0; i < rockPositions.length; i++) {
+    if (collectedRocks.has(i)) continue;  // Don't draw collected rocks
+  
+    let pos = rockPositions[i];
     let rock = new Cube();
-    rock.textureNum = 2; // Try grass texture instead
+    rock.textureNum = 2;
+    rock.color = [1, 1, 1, 1];
     rock.matrix.translate(pos[0], 0, pos[2]);
     rock.matrix.scale(0.25, 0.25, 0.25);
-    rock.render();
+    rock.renderfast();
   }
+  
+  
 }

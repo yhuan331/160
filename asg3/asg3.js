@@ -33,6 +33,17 @@ var g_lastFrameTime = performance.now();
 
 let g_userBlocks = new Map(); // Store user blocks
 
+const rockPositions = [
+    [2, 0, -2],
+    [-1, 0, 3],
+   //  [0, 0, 0],
+  [1, 0, 1]
+  ];
+  
+  let collectedRocks = new Set();
+  const totalRocks = rockPositions.length;
+
+
 
 // Vertex shader program ==========================================
 var VSHADER_SOURCE =`
@@ -424,7 +435,34 @@ console.log("Added block at:", x, y, z);
    g_userBlocks.delete(key);
    console.log("Removed block at: ", key);
  }
+
+ function tryCollectRock() {
+   for (let i = 0; i < rockPositions.length; i++) {
+     if (collectedRocks.has(i)) continue;
  
+     let [rx, _, rz] = rockPositions[i];
+     let dx = g_camera.eye.elements[0] - rx;
+     let dz = g_camera.eye.elements[2] - rz;
+ 
+     if (Math.sqrt(dx * dx + dz * dz) < 1.5) {  // Made radius bigger
+       collectedRocks.add(i);
+       console.log(`Collected rock at index ${i}`);
+       sendTextToHTML(`Rocks Collected: ${collectedRocks.size}/${totalRocks}`, "rockCount");
+       break;
+     }
+   }
+ 
+ 
+ 
+   // Update rock counter
+   document.getElementById('rockCount').innerText =
+     `🪨 Rocks Collected: ${collectedRocks.size} / ${totalRocks}`;
+ 
+   if (collectedRocks.size === totalRocks) {
+     document.getElementById('gameMessage').innerText = "🎉 You Win!";
+   }
+}
+
 
  function keydown(ev) {
 	if (ev.key === 'w') g_camera.moveForward();
@@ -438,6 +476,10 @@ console.log("Added block at:", x, y, z);
    } else if (ev.key === 'x') { // X to remove a block
       removeBlock();
    }
+   else if (ev.key === 'c') {
+      tryCollectRock();  // Press C to collect
+    }
+    
 
    renderScene();
 }
