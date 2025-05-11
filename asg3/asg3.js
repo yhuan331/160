@@ -11,6 +11,7 @@ var u_ViewMatrix;
 var u_GlobalRotateMatrix;
 var u_Sampler0;
 var u_Sampler1;
+var u_Sampler2;   
 var u_whichTexture;
 var u_Clicked;
 
@@ -176,15 +177,22 @@ function connectVariablesToGLSL(){
    // Get the storage location of u_Sampler0
    u_Sampler0 = gl.getUniformLocation(gl.program, 'u_Sampler0');
    if (!u_Sampler0) {
-     console.log('Failed to get the storage location of u_Sampler0');
-     return false;
+   console.log('Failed to get the storage location of u_Sampler0');
+   return false;
    }
 
    u_Sampler1 = gl.getUniformLocation(gl.program, 'u_Sampler1');
    if (!u_Sampler1) {
-     console.log('Failed to get the storage location of u_Sampler1');
-     return false;
+   console.log('Failed to get the storage location of u_Sampler1');
+   return false;
    }
+
+   u_Sampler2 = gl.getUniformLocation(gl.program, 'u_Sampler2');
+   if (!u_Sampler2) {
+   console.log('Failed to get the storage location of u_Sampler2');
+   return false;
+}
+
 
    var identityM = new Matrix4();
    gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
@@ -214,7 +222,7 @@ function initTextures() {
    // Tell the browser to load an image
    image.src = 'grass.png';
    image1.src = 'sky.jpg';
-   image2.src = 'rock.png';
+   image2.src = 'rock4.jpg';
 
    // Add more texture loading here // DEBUG:
    return true;
@@ -300,7 +308,7 @@ function sendTextureToTEXTURERock(image) {
    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
  
-   gl.uniform1i(gl.getUniformLocation(gl.program, 'u_Sampler2'), 2);
+   gl.uniform1i(u_Sampler2, 2);
    console.log("Finished loadTexture rock");
  }
  

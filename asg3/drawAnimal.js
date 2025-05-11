@@ -589,10 +589,9 @@ function drawAnimal() {
 
   for (let pos of rockPositions) {
     let rock = new Cube();
-    rock.textureNum = 2;
-    rock.color = [1, 1, 1, 1];
+    rock.textureNum = 2; // Try grass texture instead
     rock.matrix.translate(pos[0], 0, pos[2]);
     rock.matrix.scale(0.25, 0.25, 0.25);
-    rock.renderfast();
+    rock.render();
   }
 }
