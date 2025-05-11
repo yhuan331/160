@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8" />
+   <title> Blocky world - Yuhua Huang</title>
+   <link rel="shortcut icon" href="">
+</head>
+
+<body onload="main()">
+   <!-- Create a canvas (400x400) Note: size and origin -->
+   <canvas id="asg3" width="400" height="400" style="border:1px solid #000000;">
+      Please use a browser that supports "canvas"
+   </canvas>
+   <br><br>
+   <!-- Camera and Joint -->
+   <p id = "numdot"> XXX</p>
+   <label for="camera">Camera Angle:</label>
+   <input type="range" id="camera" name="camera" min="0" max="360" value="0" class = "slider"><br>
+   <label for="joint">Front Leg (Upper/Lower Joint)</label>
+   <input type="range" min="0" max="25" value="0" class="slider" id="joint">
+   <p>
+   
+   <label for="joint2">Front Leg (Lower Joint Only)</label>
+   <input type="range" min="0" max="12" value="0" class="slider" id="joint2">
+   <p>
+   
+   <label for="headSlide">Head Tilt</label>
+   <input type="range" min="0" max="14" value="0" class="slider" id="headSlide">
+   <p>
+      <label> Animation Control:</label>
+      <button type="button" id="animate_on">Start </button>
+      <button type="button" id="animate_off">Stop </button>
+      
+   <p>Note:<br>
+      Use WASD or Arrow Keys to move. <br>
+      Q to pan left and E to pan right.<br>
+      Mouse movement will also rotate the camera.<br>
+      Skybox and Floor are textured.<br>
+      Awsomeneess work : click the animation button to start the animation.<br>
+   </p>
+
+   <!-- javascript files containing functions for WebGL -->
+   <script src="lib/webgl-utils.js"></script>
+   <script src="lib/webgl-debug.js"></script>
+   <script src="lib/cuon-utils.js"></script>
+   <script src="lib/cuon-matrix-cse160.js"></script>
+
+`
+   <script type=text/javascript src="Triangle.js"></script>
+   <script type=text/javascript src="Point.js"></script>
+   <script type=text/javascript src="Circle.js"></script>
+   <script type=text/javascript src="Cone.js"></script>
+   <script type=text/javascript src="Cube.js"></script>
+   <script type=text/javascript src="CubePrism.js"></script>
+   <script type=text/javascript src="asg3.js"></script>
+   <script type=text/javascript src="drawAnimal.js"></script>
+   <script type=text/javascript src="Camera.js"></script>
+
+</body>
+</html>
