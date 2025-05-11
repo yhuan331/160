@@ -446,6 +446,8 @@ function renderScene(){
    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
    drawAnimal();
+   //console.log("eye:", g_camera.eye.elements, "at:", g_camera.at.elements);
+
 }
 
 

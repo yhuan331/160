@@ -10,8 +10,10 @@ class Camera {
 		this.fov = 60;
 		// this.eye = new Vector3([0,0.5,0]);
 		// this.at = new Vector3([0,0.5,-1]);
-      this.eye = new Vector3([0, 1, 2]);   // 👈 higher and farther back
-      this.at = new Vector3([0, 2, 0]);     // 👈 look slightly downward
+      this.eye = new Vector3([-0.1918726, 0.3, -3.0531721]);
+      this.at  = new Vector3([-0.1918726, 0.3, -2.0531721]);
+      
+  
 		this.up = new Vector3([0,1,0]);
 		this.viewMatrix = new Matrix4();
 		this.projectionMatrix = new Matrix4();
