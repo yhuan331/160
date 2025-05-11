@@ -61,7 +61,9 @@ var VSHADER_SOURCE =`
          vec4(1,1,1,1);
       }
       gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
-      v_UV = a_UV;
+     v_UV = a_UV;
+
+      
    }`
 
 // Fragment shader program ========================================
@@ -100,6 +102,26 @@ function addActionsForHtmlUI(){
    document.getElementById('animate_off').onclick = function() {g_Animation = false;};
 
 }
+//obj loader ======
+let objMesh;
+
+function loadOBJModel() {
+  fetch('cube.obj')
+    .then(res => res.text())
+    .then(data => {
+      objMesh = new OBJ.Mesh(data);
+      OBJ.initMeshBuffers(gl, objMesh);
+
+      console.log("✅ OBJ loaded:");
+console.log("Vertices:", objMesh.vertices.length);
+console.log("UVs:", objMesh.textures?.length || 0);
+console.log("Normals:", objMesh.vertexNormals?.length || 0);
+console.log("Indices:", objMesh.indices?.length || 0);
+console.log("Index Buffer:", objMesh.indexBuffer);
+
+    });
+}
+
 
 // Get Canvas and GL Context ======================================
 function setupWebGL(){
@@ -136,6 +158,8 @@ function connectVariablesToGLSL(){
    }
 
    a_UV = gl.getAttribLocation(gl.program, 'a_UV');
+   console.log("a_UV location:", a_UV);
+
    if (a_UV < 0) {
        console.log('Failed to get the storage location of a_UV');
        return;
@@ -340,6 +364,8 @@ function main() {
    }
 
    initTextures();
+   loadOBJModel();
+
 
    // Specify the color for clearing <canvas>
    gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -503,6 +529,38 @@ function tick(){
 }
 
 
+function renderOBJ() {
+   if (!objMesh) return;
+ 
+   // Bind vertices
+   gl.bindBuffer(gl.ARRAY_BUFFER, objMesh.vertexBuffer);
+   gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
+   gl.enableVertexAttribArray(a_Position);
+ 
+   // Bind UVs if needed
+   if (a_UV !== -1 && objMesh.textures && objMesh.textures.length > 0) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, objMesh.textureBuffer);
+      gl.vertexAttribPointer(a_UV, 2, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(a_UV);
+   } else {
+      gl.disableVertexAttribArray(a_UV); // Optional
+   }
+   
+    
+    
+ 
+   // Identity model matrix (or customize)
+   let modelMatrix = new Matrix4();
+   gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+ 
+   gl.uniform1i(u_whichTexture, -2);  // Plain color mode
+   gl.uniform4f(u_FragColor, 0.8, 0.2, 0.2, 1.0);  // Red color
+ 
+   // Draw
+   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, objMesh.indexBuffer);
+   gl.drawElements(gl.TRIANGLES, objMesh.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+ }
+ 
 // renderScene ====================================================
 function renderScene(){
    let lookDir = new Vector3([
@@ -526,6 +584,9 @@ function renderScene(){
 
    drawAnimal();
    //console.log("eye:", g_camera.eye.elements, "at:", g_camera.at.elements);
+   renderOBJ(); 
+
+   
 
 }
 

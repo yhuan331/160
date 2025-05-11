@@ -2,7 +2,38 @@ var g_map=[]
 
 let g_cachedMap = [];
 
- 
+let g_terrainCubes = [];
+
+
+
+// function drawTerrainMap() {
+//   if (g_terrainCubes.length === 0) {
+//     const terrainSize = 16;          // Smaller terrain for better FPS
+//     const scale = 0.25;              // Cube size
+//     const heightScale = 0.8;         // Lower hills for fewer cubes
+
+//     for (let x = 0; x < terrainSize; x++) {
+//       for (let z = 0; z < terrainSize; z++) {
+//         let height = Math.floor((Math.sin(x / 3) + Math.cos(z / 4)) * heightScale + 1); // ~1-2 cubes tall
+
+//         for (let y = 0; y < height; y++) {
+//           const cube = new Cube();
+//           cube.textureNum = 0; // Grass texture
+//           cube.color = [1, 1, 1, 1];
+//           cube.matrix.translate(x * scale - 2, y * scale - 0.26, z * scale - 2);
+//           cube.matrix.scale(scale, scale, scale);
+//           g_terrainCubes.push(cube);
+//         }
+//       }
+//     }
+//   }
+
+//   for (const cube of g_terrainCubes) {
+//     cube.renderfast();
+//   }
+// }
+
+
 function drawMap() {
   // First-time setup - cache all wall vertices
   if (g_cachedMap.length === 0) {
@@ -287,7 +318,8 @@ function drawAnimal() {
   floor.matrix.translate(-0.5, 0, -0.5);
   floor.render();
 
-  
+  // drawTerrainMap();
+
   
   for (let i = 0; i < rockPositions.length; i++) {
     if (collectedRocks.has(i)) continue;  // Don't draw collected rocks
