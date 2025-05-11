@@ -59,6 +59,7 @@ var FSHADER_SOURCE =`
     uniform vec4 u_FragColor;
     uniform sampler2D u_Sampler0;
     uniform sampler2D u_Sampler1;
+    uniform sampler2D u_Sampler2;
     uniform int u_whichTexture;
     void main() {
       if(u_whichTexture == -2){
@@ -69,6 +70,8 @@ var FSHADER_SOURCE =`
          gl_FragColor = texture2D(u_Sampler0, v_UV);  // Use texture0
       } else if(u_whichTexture == 1){
          gl_FragColor = texture2D(u_Sampler1, v_UV);  // Use texture1
+      } else if(u_whichTexture == 2){
+         gl_FragColor = texture2D(u_Sampler2, v_UV);
       } else {
          gl_FragColor = vec4(1,.2,.2,1);              // Error, Red
       }
@@ -192,6 +195,8 @@ function connectVariablesToGLSL(){
 function initTextures() {
    var image = new Image();  // Create the image object
    var image1 = new Image();  // Create the image object
+   var image2 = new Image();
+
    if (!image) {
       console.log('Failed to create the image object');
       return false;
@@ -203,9 +208,13 @@ function initTextures() {
    // Register the event handler to be called on loading an image
    image.onload = function(){ sendTextureToTEXTUREgrass(image); };
    image1.onload = function(){ sendTextureToTEXTUREsky(image1); };
+   image2.onload = function() { sendTextureToTEXTURERock(image2); };
+
+
    // Tell the browser to load an image
    image.src = 'grass.png';
    image1.src = 'sky.jpg';
+   image2.src = 'rock.png';
 
    // Add more texture loading here // DEBUG:
    return true;
@@ -242,7 +251,7 @@ function sendTextureToTEXTUREgrass(image) {
   gl.uniform1i(u_Sampler0, 0);
 
 
-  console.log("Finished loadTexture");
+  console.log("Finished loadTexture Grass");
 }
 // ================================SKY
 function sendTextureToTEXTUREsky(image) {
@@ -272,9 +281,29 @@ function sendTextureToTEXTUREsky(image) {
   gl.uniform1i(u_Sampler1, 1);
 
 
-  console.log("Finished loadTexture1");
+  console.log("Finished loadTexture Sky");
 }
 
+function sendTextureToTEXTURERock(image) {
+   var texture = gl.createTexture();
+   if (!texture) {
+     console.log('Failed to create rock texture');
+     return;
+   }
+ 
+   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+   gl.activeTexture(gl.TEXTURE2);
+   gl.bindTexture(gl.TEXTURE_2D, texture);
+   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+ 
+   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+ 
+   gl.uniform1i(gl.getUniformLocation(gl.program, 'u_Sampler2'), 2);
+   console.log("Finished loadTexture rock");
+ }
+ 
 
 // Main ===========================================================
 function main() {
