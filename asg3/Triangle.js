@@ -52,73 +52,76 @@ class Triangle{
  
     gl.drawArrays(gl.TRIANGLES, 0, n);
  }
- 
- function drawTriangle3D(vertices){
-   var n = vertices.length / 3;
-   // console.log("Drawing", n, "vertices");
-   // console.log("Current shader program:", gl.getParameter(gl.CURRENT_PROGRAM));
-   // console.log("Is a_UV enabled:", gl.getVertexAttrib(a_UV, gl.VERTEX_ATTRIB_ARRAY_ENABLED));
-
-   var vertexBuffer = gl.createBuffer();
-   if (!vertexBuffer) {
-       console.log('Failed to create the buffer object');
-       return -1;
+ // Modified helper functions to maintain attribute state
+function drawTriangle3D(vertices) {
+   // Enable position attribute if needed
+   if (!g_positionEnabled) {
+     gl.enableVertexAttribArray(a_Position);
+     g_positionEnabled = true;
    }
-
-   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.DYNAMIC_DRAW);
-
-   gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
-   gl.enableVertexAttribArray(a_Position);
-
    
-   if (gl.getVertexAttrib(a_UV, gl.VERTEX_ATTRIB_ARRAY_ENABLED)) {
-       gl.disableVertexAttribArray(a_UV);
+   // Disable UV attribute if needed
+   if (g_uvEnabled) {
+     gl.disableVertexAttribArray(a_UV);
+     g_uvEnabled = false;
    }
-
-   gl.drawArrays(gl.TRIANGLES, 0, n);
-}
-
+   
+   // Set up buffers
+   if (g_vertexBuffer === null) {
+     g_vertexBuffer = gl.createBuffer();
+   }
+   
+   gl.bindBuffer(gl.ARRAY_BUFFER, g_vertexBuffer);
+   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+   gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
+   gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
+ }
  
- function drawTriangle3DUV(vertices, uv){
-    var n = 3;
- 
-    var vertexBuffer = gl.createBuffer();
-    if(!vertexBuffer){
-       console.log('Failed to create the buffer object');
-       return -1;
-    }
- 
-    // Bind the buffer object to target
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    // Write date into the buffer object
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.DYNAMIC_DRAW);
- 
-    // Assign the buffer object to a_Position variable
-    gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
- 
-    // Enable the assignment to a_Position variable
-    gl.enableVertexAttribArray(a_Position);
- 
-    gl.drawArrays(gl.TRIANGLES, 0, n);
- 
-    // --------------------------------
-    var uvBuffer = gl.createBuffer();
-    if(!uvBuffer){
-       console.log('Failed to create the buffer object');
-       return -1;
-    }
-    //
-    // Bind the buffer object to target
-    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
-    // Write date into the buffer object
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uv), gl.DYNAMIC_DRAW);
- 
-    // Assign the buffer object to a_UV variable
-    gl.vertexAttribPointer(a_UV, 2, gl.FLOAT, false, 0, 0);
- 
-    // Enable the assignment to a_UV variable
-    gl.enableVertexAttribArray(a_UV);
- 
-    gl.drawArrays(gl.TRIANGLES, 0, n);
+ function drawTriangle3DUV(vertices, uvs) {
+   // Enable position attribute if needed
+   if (!g_positionEnabled) {
+     gl.enableVertexAttribArray(a_Position);
+     g_positionEnabled = true;
+   }
+   
+   // Enable UV attribute if needed
+   if (!g_uvEnabled) {
+     gl.enableVertexAttribArray(a_UV);
+     g_uvEnabled = true;
+   }
+   
+   // Initialize buffers if needed
+   if (g_vertexBuffer === null) {
+     g_vertexBuffer = gl.createBuffer();
+   }
+   if (g_uvBuffer === null) {
+     g_uvBuffer = gl.createBuffer();
+   }
+   
+   // Set up vertex data
+   gl.bindBuffer(gl.ARRAY_BUFFER, g_vertexBuffer);
+   
+   // Use Float32Array if not already
+   if (vertices instanceof Float32Array) {
+     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+   } else {
+     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+   }
+   
+   gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
+   
+   // Set up UV data
+   gl.bindBuffer(gl.ARRAY_BUFFER, g_uvBuffer);
+   
+   // Use Float32Array if not already
+   if (uvs instanceof Float32Array) {
+     gl.bufferData(gl.ARRAY_BUFFER, uvs, gl.STATIC_DRAW);
+   } else {
+     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uvs), gl.STATIC_DRAW);
+   }
+   
+   gl.vertexAttribPointer(a_UV, 2, gl.FLOAT, false, 0, 0);
+   
+   // Draw
+   gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
  }
