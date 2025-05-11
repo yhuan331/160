@@ -342,9 +342,9 @@ let lookDir = new Vector3([
  
    coord = convertCoordinatesEventToGL(ev);
    if(coord[0] < 0.5){ // left side
-      g_camera.panMLeft(coord[0]*-10);
+      g_camera.panLeft(coord[0]*-10);
    } else{
-      g_camera.panMRight(coord[0]*-10);
+      g_camera.panRight(coord[0]*-10);
    }
 }
 
@@ -389,20 +389,13 @@ console.log("Added block at:", x, y, z);
  }
  
 
-function keydown(ev){
-   if(ev.keyCode==39 || ev.keyCode == 68){ // Right Arrow or D
-      g_camera.right();
-   } else if (ev.keyCode==37 || ev.keyCode == 65){ // Left Arrow or A
-      g_camera.left();
-   } else if (ev.keyCode==38 || ev.keyCode == 87){ // up Arrow or W
-      g_camera.forward();
-   } else if (ev.keyCode==40 || ev.keyCode == 83){ // down Arrow or S
-      g_camera.back();
-   } else if (ev.keyCode==81){ // Q
-      g_camera.panLeft();
-   } else if (ev.keyCode==69){ // E
-      g_camera.panRight();
-   }
+ function keydown(ev) {
+	if (ev.key === 'w') g_camera.moveForward();
+	else if (ev.key === 's') g_camera.moveBackward();
+	else if (ev.key === 'a') g_camera.moveLeft();
+	else if (ev.key === 'd') g_camera.moveRight();
+	else if (ev.key === 'q') g_camera.panLeft();
+	else if (ev.key === 'e') g_camera.panRight();
    else if (ev.key === 'z') { // Z to add a bzlock
       addBlock();
    } else if (ev.key === 'x') { // X to remove a block
@@ -432,32 +425,29 @@ function tick(){
 
 
 // renderScene ====================================================
-
 function renderScene(){
    let lookDir = new Vector3([
       Math.sin(gAnimalGlobalRotation * Math.PI / 180),
       0,
       Math.cos(gAnimalGlobalRotation * Math.PI / 180)
     ]);
-    g_camera.at = new Vector3(g_camera.eye.elements).add(lookDir);
+   g_camera.at = new Vector3(g_camera.eye.elements).add(lookDir);
 
-   var projMat = g_camera.projMat;
+   var projMat = g_camera.projectionMatrix;
+   var viewMat = g_camera.viewMatrix;
+
+   // ✅ These two lines are essential:
    gl.uniformMatrix4fv(u_ProjectionMatrix, false, projMat.elements);
-
-   var viewMat = g_camera.viewMat;
    gl.uniformMatrix4fv(u_ViewMatrix, false, viewMat.elements);
 
    var globalRotMat = new Matrix4().rotate(gAnimalGlobalRotation, 0,1,0);
    gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
 
    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-   gl.clear(gl.COLOR_BUFFER_BIT);
 
-   // console.time("drawAnimal");
    drawAnimal();
-   // console.timeEnd("drawAnimal");
-
 }
+
 
 // ====== Send Text to HTML ======
 function sendTextToHTML (text,htmlID){
