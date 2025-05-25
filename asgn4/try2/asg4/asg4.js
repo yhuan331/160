@@ -17,7 +17,7 @@ var u_whichTexture;
 var u_lightPos;
 var u_cameraPos;
 var u_lightColor;
-var g_spotOn = true;
+var g_spotOn = false;
 var u_spotOn;
 var u_spotDirection;
 var g_spotDirection = [0, -1, 0];
@@ -456,7 +456,7 @@ function main() {
    //    });
 
    g_loadedModel = new Model('bunny.obj');
-   
+
    initTextures();
 
    // Specify the color for clearing <canvas>
