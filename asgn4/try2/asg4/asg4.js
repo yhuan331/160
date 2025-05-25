@@ -16,6 +16,14 @@ var u_Sampler1;
 var u_whichTexture;
 var u_lightPos;
 var u_cameraPos;
+var u_lightColor;
+var g_spotOn = true;
+var u_spotOn;
+var u_spotDirection;
+var g_spotDirection = [0, -1, 0];
+
+
+
 
 // Camera Movement
 var g_camera;
@@ -29,10 +37,14 @@ var g_Animation = false; // Joint 2
 var g_normalOn = false;
 var g_lightOn = true;
 var g_lightPos = [0,1,1];
+let g_lastFrameTime = performance.now();
+
 
 // Animation
 var g_startTime = performance.now()/1000.0;
 var g_seconds = performance.now()/1000.0 - g_startTime;
+
+let g_loadedModel = null;
 
 
 // Vertex shader program ==========================================
@@ -69,6 +81,12 @@ var FSHADER_SOURCE =`
     uniform vec3 u_cameraPos;
     varying vec4 v_VertPos;
     uniform bool u_lightOn;
+    uniform vec3 u_lightColor;
+    uniform bool u_spotOn;
+    uniform vec3 u_spotDirection;
+    
+ 
+
 
     void main() {
       if(u_whichTexture == -3){
@@ -88,20 +106,22 @@ var FSHADER_SOURCE =`
       vec3 lightVector = u_lightPos-vec3(v_VertPos);
       float r = length(lightVector);
 
-      // Red/Green Distance Visualization
-      // if(r<1.0){
-      //    gl_FragColor = vec4(1,0,0,1);
-      // } else if (r<2.0){
-      //    gl_FragColor = vec4(0,1,0,1);
-      // }
-
-      // Light Falloff Visualization 1/r^2
-      // gl_FragColor = vec4(vec3(gl_FragColor)/(r*r),1);
 
       // N dot L
       vec3 L = normalize(lightVector);
       vec3 N = normalize(v_Normal);
       float nDotL = max(dot(N,L), 0.0);
+
+      float spotEffect = 1.0;
+      if (u_spotOn) {
+         float theta = dot(normalize(-L), normalize(u_spotDirection));
+         float cutoff = 0.9;
+         float epsilon = 0.1;  // controls softness of spotlight edge
+         spotEffect = smoothstep(cutoff - epsilon, cutoff, theta);
+      }
+      nDotL *= spotEffect;
+
+
 
       // Reflection
       vec3 R = reflect(-L,N);
@@ -112,8 +132,13 @@ var FSHADER_SOURCE =`
       // Specular
       float specular = pow(max(dot(E,R), 0.0), 10.0)* 0.5;
 
-      vec3 diffuse = vec3(gl_FragColor) * nDotL * 0.7;
-      vec3 ambient = vec3(gl_FragColor) * 0.3;
+      // vec3 diffuse = vec3(gl_FragColor) * nDotL * 0.7;
+      // vec3 ambient = vec3(gl_FragColor) * 0.3;
+
+      vec3 lightColor = u_lightColor;
+      vec3 diffuse = lightColor * vec3(gl_FragColor) * nDotL * 0.7;
+      vec3 ambient = lightColor * vec3(gl_FragColor) * 0.3;
+
       if(u_lightOn){
             gl_FragColor = vec4(specular+diffuse+ambient, 1.0);
       }
@@ -145,7 +170,16 @@ function addActionsForHtmlUI(){
     document.getElementById('lightz').addEventListener('input', function() {
       g_lightPos[2] = this.value / 100;
       renderScene();
+
     });
+
+    document.getElementById('lightR').addEventListener('input', renderScene);
+   document.getElementById('lightG').addEventListener('input', renderScene);
+   document.getElementById('lightB').addEventListener('input', renderScene);
+   document.getElementById('spot_on').onclick = function() { g_spotOn = true; };
+   document.getElementById('spot_off').onclick = function() { g_spotOn = false; };
+
+
     
    // document.getElementById('joint').addEventListener('mousemove', function(ev) { if(ev.buttons == 1){ g_jointAngle = this.value; renderScene();}});
    // document.getElementById('joint2').addEventListener('mousemove', function(ev) { if(ev.buttons == 1){ g_jointAngle2 = this.value; renderScene();}});
@@ -187,6 +221,7 @@ function connectVariablesToGLSL(){
    }
 
    // Get the storage location of attribute variable ==============
+
    a_Position = gl.getAttribLocation(gl.program, 'a_Position');
    if (a_Position < 0) {
        console.log('Failed to get the storage location of a_Position');
@@ -270,6 +305,18 @@ function connectVariablesToGLSL(){
        console.log('Failed to get u_ProjectionMatrix');
        return;
    }
+   u_spotOn = gl.getUniformLocation(gl.program, 'u_spotOn');
+   if (!u_spotOn) {
+   console.log('Failed to get u_spotOn');
+   return;
+   }
+
+   u_spotDirection = gl.getUniformLocation(gl.program, 'u_spotDirection');
+   if (!u_spotDirection) {
+   console.log('Failed to get u_spotDirection');
+   return;
+   }
+
 
    // Get the storage location of u_Sampler0
    u_Sampler0 = gl.getUniformLocation(gl.program, 'u_Sampler0');
@@ -283,6 +330,12 @@ function connectVariablesToGLSL(){
      console.log('Failed to get the storage location of u_Sampler1');
      return false;
    }
+   u_lightColor = gl.getUniformLocation(gl.program, 'u_lightColor');
+   if (!u_lightColor) {
+      console.log('Failed to get u_lightColor');
+      return;
+   }
+
 
    var identityM = new Matrix4();
    gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
@@ -385,10 +438,25 @@ function main() {
 
    g_camera = new Camera();
    document.onkeydown = keydown;
-   // canvas.onmousemove = function(ev){
-   //    mouseCam(ev);
-   // }
 
+   // fetch('bunny.obj')
+   //    .then(response => {
+   //      if (!response.ok) {
+   //        throw new Error('Network response was not ok');
+   //      }
+   //      return response.text();
+   //    })
+   //    .then(objText => {
+   //      g_loadedModel = new Model(objText);
+   //      console.log("Model loaded successfully");
+   //      renderScene(); // Re-render after model loads
+   //    })
+   //    .catch(error => {
+   //      console.error('Error loading model:', error);
+   //    });
+
+   g_loadedModel = new Model('bunny.obj');
+   
    initTextures();
 
    // Specify the color for clearing <canvas>
@@ -442,9 +510,19 @@ function keydown(ev){
 
 // TICK ===========================================================
 function tick(){
-   g_seconds = performance.now()/1000.0 - g_startTime;
+   let now = performance.now();
+   let duration = now - g_lastFrameTime; 
+   g_lastFrameTime = now;               
+
+   g_seconds = now / 1000.0 - g_startTime;
    updateAnimationAngles();
    renderScene();
+
+   if (duration > 0) {
+      let fps = Math.floor(1000 / duration * 10) / 10;
+      sendTextToHTML("fps: " + fps, "numdot");
+   }
+
    requestAnimationFrame(tick);
 }
 
@@ -463,6 +541,16 @@ function renderScene(){
    var globalRotMat = new Matrix4().rotate(gAnimalGlobalRotation, 0,1,0);
    gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
 
+
+   let r = document.getElementById("lightR").value / 255;
+   let g = document.getElementById("lightG").value / 255;
+   let b = document.getElementById("lightB").value / 255;
+   gl.uniform3f(u_lightColor, r, g, b);
+
+   gl.uniform1i(u_spotOn, g_spotOn);
+   gl.uniform3f(u_spotDirection, g_spotDirection[0], g_spotDirection[1], g_spotDirection[2]);
+
+   
    // Clear <canvas>
    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
    gl.clear(gl.COLOR_BUFFER_BIT);
@@ -470,10 +558,20 @@ function renderScene(){
    drawAllShapes();
 }
 
+
 function updateAnimationAngles(){
    if(g_Animation){
       g_jointAngle = 10*Math.sin(g_seconds);
       head_animation = 15*Math.sin(g_seconds);
    }
    g_lightPos[0]=2*cos(g_seconds);
+}
+
+function sendTextToHTML (text,htmlID){
+   var htmlElm = document.getElementById(htmlID);
+   if (!htmlElm) {
+    console.log ("failed to get " + htmlID + "from HTML");
+    return;
+   }
+   htmlElm.innerHTML = text;
 }

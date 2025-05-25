@@ -289,4 +289,10 @@ function drawAllShapes(){
    floor.matrix.translate(-.5, 0, -.5);
    floor.render();
 
+   if (g_loadedModel && g_loadedModel.ready) {
+      console.log("Rendering model...")
+      g_loadedModel.render();
+   }
+
 }
+

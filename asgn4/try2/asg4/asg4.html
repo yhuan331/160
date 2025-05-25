@@ -12,6 +12,7 @@
       Please use a browser that supports "canvas"
    </canvas>
    <br><br>
+   <p id = "numdot"> XXX</p>
    <!-- Camera and Joint -->
    <label for="camera">Camera Angle:</label>
    <input type="range" id="camera" name="camera" min="0" max="360" value="0" class = "slider"><br>
@@ -21,7 +22,15 @@
    <input type="range" id="lighty" name="lighty" min="1" max="250" value="100" class = "slider"><br>
    <label for="lightz">Light Z</label>
    <input type="range" id="lightz" name="lightz" min="-400" max="250" value="100" class = "slider"><br>
-
+   <br> 
+ 
+   <label for="lightR">Light R</label>
+   <input type="range" id="lightR" name="lightR" min="0" max="255" value="255" class="slider">
+   <label for="lightG">G</label>
+   <input type="range" id="lightG" name="lightG" min="0" max="255" value="255" class="slider">
+   <label for="lightB">B</label>
+   <input type="range" id="lightB" name="lightB" min="0" max="255" value="255" class="slider">
+   <br>
    <label for="animate_on">Animation: </label>
    <button type="button" id="animate_on">ON</button>
    <button type="button" id="animate_off">OFF</button><br>
@@ -31,6 +40,11 @@
    <label for="light_on">Light: </label>
    <button type="button" id="light_on">ON</button>
    <button type="button" id="light_off">OFF</button><br>
+   <label for="spot_on">Spotlight: </label>
+   <button type="button" id="spot_on">ON</button>
+   <button type="button" id="spot_off">OFF</button><br>
+
+   <br>
    
    <p>Note:<br>
       Use WASD or Arrow Keys to move. <br>
@@ -50,6 +64,8 @@
    <script type=text/javascript src="Circle.js"></script>
    <script type=text/javascript src="Cube.js"></script>
    <script type=text/javascript src="Sphere.js"></script>
+   <script type="text/javascript" src="OBJLoader.js"></script>
+   <script type="text/javascript" src="Model.js"></script>
    <script type=text/javascript src="asg4.js"></script>
    <script type=text/javascript src="drawAllShapes.js"></script>
    <script type=text/javascript src="Camera.js"></script>
