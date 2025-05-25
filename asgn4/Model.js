@@ -221,7 +221,7 @@ class Model {
     // Draw the model
     try {
       gl.drawArrays(gl.TRIANGLES, 0, safeCount);
-      console.log("Rendering model with", safeCount, "vertices");
+     // console.log("Rendering model with", safeCount, "vertices");
     } catch (e) {
       console.error("Error rendering:", e);
     }

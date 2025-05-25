@@ -290,7 +290,7 @@ function drawAllShapes(){
    floor.render();
 
    if (g_loadedModel && g_loadedModel.ready) {
-      console.log("Rendering model...")
+      //console.log("Rendering model...")
       g_loadedModel.render();
    }
 
