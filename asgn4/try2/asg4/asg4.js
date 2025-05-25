@@ -121,11 +121,32 @@ var FSHADER_SOURCE =`
 
 // HTML ============================================================
 function addActionsForHtmlUI(){
-   // Color Slider Events
-   document.getElementById('camera').addEventListener('mousemove', function(ev) { if(ev.buttons == 1){ gAnimalGlobalRotation = this.value; renderScene();}});
-   document.getElementById('lightx').addEventListener('mousemove', function(ev) { if(ev.buttons == 1){ g_lightPos[0] = this.value/100; renderScene();}});
-   document.getElementById('lighty').addEventListener('mousemove', function(ev) { if(ev.buttons == 1){ g_lightPos[1] = this.value/100; renderScene();}});
-   document.getElementById('lightz').addEventListener('mousemove', function(ev) { if(ev.buttons == 1){ g_lightPos[2] = this.value/100; renderScene();}});
+   // // Color Slider Events
+   // document.getElementById('camera').addEventListener('mousemove', function(ev) { if(ev.buttons == 1){ gAnimalGlobalRotation = this.value; renderScene();}});
+   // document.getElementById('lightx').addEventListener('mousemove', function(ev) { if(ev.buttons == 1){ g_lightPos[0] = this.value/100; renderScene();}});
+   // document.getElementById('lighty').addEventListener('mousemove', function(ev) { if(ev.buttons == 1){ g_lightPos[1] = this.value/100; renderScene();}});
+   // document.getElementById('lightz').addEventListener('mousemove', function(ev) { if(ev.buttons == 1){ g_lightPos[2] = this.value/100; renderScene();}});
+
+   document.getElementById('camera').addEventListener('input', function() {
+      gAnimalGlobalRotation = this.value;
+      renderScene();
+    });
+    
+    document.getElementById('lightx').addEventListener('input', function() {
+      g_lightPos[0] = this.value / 100;
+      renderScene();
+    });
+    
+    document.getElementById('lighty').addEventListener('input', function() {
+      g_lightPos[1] = this.value / 100;
+      renderScene();
+    });
+    
+    document.getElementById('lightz').addEventListener('input', function() {
+      g_lightPos[2] = this.value / 100;
+      renderScene();
+    });
+    
    // document.getElementById('joint').addEventListener('mousemove', function(ev) { if(ev.buttons == 1){ g_jointAngle = this.value; renderScene();}});
    // document.getElementById('joint2').addEventListener('mousemove', function(ev) { if(ev.buttons == 1){ g_jointAngle2 = this.value; renderScene();}});
    document.getElementById('animate_on').onclick = function() {g_Animation = true;};
