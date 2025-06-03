@@ -35,6 +35,8 @@ export default class StreetLight extends THREE.Group {
 		pointLight.castShadow = true;
 		pole.add(pointLight);
 		pointLight.position.set(0, 3, 0);
+
+		this.lampLight = pointLight;
 	}
 
 	animate(deltaTime) {

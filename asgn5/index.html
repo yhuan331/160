@@ -15,11 +15,34 @@
 				"three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.174.0/examples/jsm/"
 			}
 		} </script>
-		<p> Notes to grader:
-			WOW FACTOR: I created a dynamic park scene with animated elements like a moving seesaw, a streetlight, and a flowing fountain. 
-			All structures like the pig, swing set, and bench are custom-built using multiple 3D primitives.
-			The cat is made of OBJ objects. 
-		</p>
+
+
+
+		<div>
+		<button id="toggleDir"> Directional Light ON/OFF</button>
+		<button id="toggleLamp"> Lamp(point light) ON/OFF</button>
+		<button id="toggleAmbient"> Ambient Light ON/OFF</button>
+		<button id="toggleHemi"> Hemisphere Light ON/OFF</button>
+		</div>
+
+		<div style="font-family: sans-serif; line-height: 1.5; margin: 20px;">
+		<strong>📝 Notes to Grader (Assignment 5 – Yuhua Huang)</strong>
+		<ul>
+			<li>My scene includes more than 3 primary shapes (cylinders, spheres, torus, boxes), with animation on the seesaw, streetlight, and fountain. The camera uses a perspective projection, and a directional light is included.</li>
+			<li>The grass ground and the park bench use texture maps — "grass-texture-background" and "wood_texture.jpg" respectively.</li>
+			<li>I included a custom .obj model of a cat (<code>12222_Cat_v1_l3.obj</code>) loaded with a .mtl material file and texture maps.</li>
+			<li>The scene includes OrbitControls, allowing smooth mouse-based camera movement and zoom.</li>
+			<li>The scene uses four light types: DirectionalLight, AmbientLight, HemisphereLight, and a PointLight placed inside the lamp post. Each is toggleable with UI buttons.</li>
+			<li>A cube texture skybox is used, loaded with 6 sides (<code>px.png</code> to <code>nz.png</code>) using <code>CubeTextureLoader</code>.</li>
+			<li>The pig model, bench, swing set, path, trees, and other elements are all built from primitives, totaling well over 20 shapes.</li>
+			<li>Features include an animated streetlamp with spinning light rings, embedded point light that can be toggled, a glowing light bulb mesh, and multiple interactive buttons to toggle lights on/off. The whole park is custom-built.</li>
+		
+		</ul>
+		<p>🔁 Please allow a few seconds for the scene and lighting to load. Let me know if anything fails to render.</p>
+		</div>
+
+
+
 		<script type="module" src="./src/utilities.js"></script>
 		<script type="module" src="./src/seesaw.js"></script>
 		<script type="module" src="./src/swingSet.js"></script>

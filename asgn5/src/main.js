@@ -39,13 +39,10 @@ function main() {
     scene.add(directionalLight);
     directionalLight.position.set(15, 20, 10);
 
+
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
     scene.add(ambientLight);
 
-    // const skyTexture = textureLoader.load("assets/skyTexture2.jpeg");
-    // skyTexture.mapping = THREE.EquirectangularReflectionMapping;
-    // skyTexture.colorSpace = THREE.SRGBColorSpace;
-    // scene.background = skyTexture;
     const cubeTextureLoader = new THREE.CubeTextureLoader();
     const skybox = cubeTextureLoader.load([
         'assets/px.png', // +X (right)
@@ -118,13 +115,16 @@ function main() {
     fountain.position.set(0, 0, 0);  
 	fountain.scale.set(0.5, 0.5, 0.5); 
 
-    const pointLight = new THREE.PointLight(0xff9900, 1, 20);
+    const pointLight = new THREE.PointLight(0xff9900, 2, 100); // brighter, larger range
     pointLight.position.set(5, 5, 5);
     scene.add(pointLight);
 
+
+
  
-    const hemiLight = new THREE.HemisphereLight(0x87CEEB, 0x8B4513, 0.3);
+    const hemiLight = new THREE.HemisphereLight(0x87CEEB, 0x8B4513, 1.5); // was 0.3
     scene.add(hemiLight);
+
 
 class ParkBench extends THREE.Group {
     constructor(textureLoader) {
@@ -173,6 +173,37 @@ class ParkBench extends THREE.Group {
     const bench1 = new ParkBench(textureLoader);  
     bench1.position.set(-2, 0, -8);
     scene.add(bench1);
+
+
+    // Keep global references
+    window.directionalLight = directionalLight;
+    window.pointLight = pointLight;
+    window.hemiLight = hemiLight;
+
+
+
+    // Toggle button events
+    document.getElementById('toggleDir').addEventListener('click', () => {
+        directionalLight.visible = !directionalLight.visible;
+        console.log(`Directional Light is now ${directionalLight.visible ? 'ON' : 'OFF'}`);
+    });
+
+    document.getElementById('toggleLamp').addEventListener('click', () => {
+    streetLight.lampLight.visible = !streetLight.lampLight.visible;
+    console.log(`Lamp is now ${streetLight.lampLight.visible ? 'ON' : 'OFF'}`);
+    });
+
+
+    document.getElementById('toggleHemi').addEventListener('click', () => {
+        hemiLight.visible = !hemiLight.visible;
+        console.log(`Hemisphere Light is now ${hemiLight.visible ? 'ON' : 'OFF'}`);
+    });
+
+    document.getElementById("toggleAmbient").addEventListener("click", () => {
+    ambientLight.visible = !ambientLight.visible;
+    console.log(`Ambient Light is now ${ambientLight.visible ? 'ON' : 'OFF'}`);
+    });
+
 
 
 
