@@ -1,5 +1,3 @@
-
-
 import * as THREE from "three";
 import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
 import {MTLLoader} from 'three/addons/loaders/MTLLoader.js';
@@ -20,15 +18,18 @@ function main() {
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0xDDDDDD, 0.015);
     
-    const camera = new THREE.PerspectiveCamera(60, canvas.width/canvas.height, 0.1, 500);    
-    camera.position.set(0, 3, 10);
+    const camera = new THREE.PerspectiveCamera(60, canvas.width / canvas.height, 0.1, 500);
+    camera.position.set(0.19, 2.73, 14.07);  // Set default position
+
+    const orbitControls = new OrbitControls(camera, canvas);
+    orbitControls.target.set(0, 2.5, 0);     // Point the camera at the scene center
+    orbitControls.update();                  // Apply the new target
 
     const textureLoader = new THREE.TextureLoader();
     const objLoader = new OBJLoader();
     const mtlLoader = new MTLLoader();
 
-    const orbitControls = new OrbitControls(camera, canvas);
-    orbitControls.target.set(0, 3, 0);
+
 
     const directionalLight = new THREE.DirectionalLight(0xABD3E1, 5);    
     directionalLight.shadow.camera.left = directionalLight.shadow.camera.bottom = -25;
@@ -41,11 +42,23 @@ function main() {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
     scene.add(ambientLight);
 
-    const skyTexture = textureLoader.load("assets/skyTexture2.jpeg");
-    skyTexture.mapping = THREE.EquirectangularReflectionMapping;
-    skyTexture.colorSpace = THREE.SRGBColorSpace;
-    scene.background = skyTexture;
+    // const skyTexture = textureLoader.load("assets/skyTexture2.jpeg");
+    // skyTexture.mapping = THREE.EquirectangularReflectionMapping;
+    // skyTexture.colorSpace = THREE.SRGBColorSpace;
+    // scene.background = skyTexture;
+    const cubeTextureLoader = new THREE.CubeTextureLoader();
+    const skybox = cubeTextureLoader.load([
+        'assets/px.png', // +X (right)
+        'assets/nx.png', // -X (left)
+        'assets/py.png', // +Y (top)
+        'assets/ny.png', // -Y (bottom)
+        'assets/pz.png', // +Z (front)
+        'assets/nz.png'  // -Z (back)
+    ]);
 
+    scene.background = skybox;
+
+        
     const grass_Floor = textureLoader.load("assets/grass-texture-background_64049-124.jpg.avif");
     grass_Floor.wrapS = grass_Floor.wrapT = THREE.RepeatWrapping;
     grass_Floor.repeat.set(5, 5);
@@ -77,8 +90,6 @@ function main() {
 		mtl.preload();
 		objLoader.setMaterials(mtl);
 		objLoader.load("assets/12222_Cat_v1_l3.obj", root => {
-			// have to do all code in the callback because don't know when it'll finish
-			// and idk how to do JS promises or .then() whatever stuffs
 			scene.add(root);
 			root.scale.set(0.05, 0.05, 0.05);
 			root.scale.multiplyScalar(0.5);
@@ -105,15 +116,13 @@ function main() {
     const fountain = new Fountain();
     scene.add(fountain);
     fountain.position.set(0, 0, 0);  
-	fountain.scale.set(0.5, 0.5, 0.5); // Adjust scale as needed
+	fountain.scale.set(0.5, 0.5, 0.5); 
 
-    // Add more light types for assignment requirements
-    // Point light for variety (requirement: 3 different light types)
     const pointLight = new THREE.PointLight(0xff9900, 1, 20);
     pointLight.position.set(5, 5, 5);
     scene.add(pointLight);
 
-    // Hemisphere light for more natural lighting
+ 
     const hemiLight = new THREE.HemisphereLight(0x87CEEB, 0x8B4513, 0.3);
     scene.add(hemiLight);
 
@@ -130,7 +139,7 @@ class ParkBench extends THREE.Group {
             new THREE.BoxGeometry(3, 0.2, 1),
             woodMaterial
         );
-        seat.position.y = 0.6;  // Lowered from 1 to 0.6
+        seat.position.y = 0.6;  
         seat.castShadow = true;
         seat.receiveShadow = true;
         this.add(seat);
@@ -160,8 +169,8 @@ class ParkBench extends THREE.Group {
         }
     }
 }
-    // Create benches with the textureLoader
-    const bench1 = new ParkBench(textureLoader);  // Pass textureLoader here
+   
+    const bench1 = new ParkBench(textureLoader);  
     bench1.position.set(-2, 0, -8);
     scene.add(bench1);
 
@@ -187,17 +196,38 @@ class ParkBench extends THREE.Group {
 
     let prevTime = 0;
 
-    function tick(time) {
-        time /= 1000;
+    // function tick(time) {
+    //     time /= 1000;
 
-        seesaw.animate(time);
-        streetLight.animate(time - prevTime);
-        fountain.animate(time);  
+    //     seesaw.animate(time);
+    //     streetLight.animate(time - prevTime);
+    //     fountain.animate(time);  
         
-        renderer.render(scene, camera);
-        prevTime = time;
-        requestAnimationFrame(tick);
-    }
+    //     renderer.render(scene, camera);
+    //     prevTime = time;
+    //     requestAnimationFrame(tick);
+
+        
+    // }
+
+    function tick(time) {
+    time /= 1000;
+
+    seesaw.animate(time);
+    streetLight.animate(time - prevTime);
+    fountain.animate(time);  
+
+    // // 🔍 Log camera position and rotation (once every second)
+    // if (Math.floor(time) !== Math.floor(prevTime)) {
+    //     console.log(`Camera position: ${camera.position.x.toFixed(2)}, ${camera.position.y.toFixed(2)}, ${camera.position.z.toFixed(2)}`);
+    //     console.log(`Camera rotation: ${camera.rotation.x.toFixed(2)}, ${camera.rotation.y.toFixed(2)}, ${camera.rotation.z.toFixed(2)}`);
+    // }
+
+    renderer.render(scene, camera);
+    prevTime = time;
+    requestAnimationFrame(tick);
+}
+
 }
 
 main();

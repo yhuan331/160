@@ -1,4 +1,3 @@
-// pig.js - Fixed version
 import * as THREE from "three";
 
 export default class Pig extends THREE.Group {
