@@ -78,9 +78,9 @@ function main() {
   fountain.scale.set(0.5, 0.5, 0.5);
   scene.add(fountain);
 
-  const moonlight = new moonlight();
-  moonlight.position.set(-11, 0, -3);
-  scene.add(moonlight);
+  const moon = new moonlight();
+  moon.position.set(-11, 0, -3);
+  scene.add(moon);
 
   const windmill = new FancyWindmill();
   windmill.position.set(-10, 0, -9);
@@ -164,8 +164,8 @@ function main() {
   });
 
   document.getElementById("toggleLamp").addEventListener("click", () => {
-    moonlight.lampLight.visible = !moonlight.lampLight.visible;
-    console.log(`Lamp is now ${moonlight.lampLight.visible ? "ON" : "OFF"}`);
+    moon.lampLight.visible = !moon.lampLight.visible;
+    console.log(`Lamp is now ${moon.lampLight.visible ? "ON" : "OFF"}`);
   });
 
   document.getElementById("toggleHemi").addEventListener("click", () => {
@@ -184,7 +184,7 @@ function main() {
     time /= 1000;
     const deltaTime = time - prevTime;
 
-    moonlight.animate(deltaTime);
+    moon.animate(deltaTime);
     fountain.animate(time);
     windmill.animate(deltaTime);
 
