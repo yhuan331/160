@@ -3,31 +3,29 @@ import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
 import {MTLLoader} from 'three/addons/loaders/MTLLoader.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import UTIL from "./utilities.js";
-import Seesaw from "./seesaw.js";
-import SwingSet from "./swingSet.js";
-import StreetLight from "./streetLight.js";
+import moonlight from "./moonlight.js";
 import Pig from './pig.js';
 import Fountain from './fountain.js';
+import FancyWindmill from './fancyWindmill.js';
 
 function main() {
     const canvas = document.getElementById("canvas");
 
-    const renderer = new THREE.WebGLRenderer({antialias: true, canvas});
-    renderer.shadowMap.enabled = true;
+    const renderScene = new THREE.WebGLRenderer({antialias: true, canvas});
+    renderScene.shadowMap.enabled = true;
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0xDDDDDD, 0.015);
     
     const camera = new THREE.PerspectiveCamera(60, canvas.width / canvas.height, 0.1, 500);
-    camera.position.set(0.19, 2.73, 14.07);  // Set default position
 
     const orbitControls = new OrbitControls(camera, canvas);
-    orbitControls.target.set(0, 2.5, 0);     // Point the camera at the scene center
-    orbitControls.update();                  // Apply the new target
-
+ 
     const textureLoader = new THREE.TextureLoader();
-    const objLoader = new OBJLoader();
-    const mtlLoader = new MTLLoader();
+
+        camera.position.set(2.55349, 3.11625, 6.39629);   // Your captured position
+        orbitControls.target.set(0, 2.5, 0);              // Target stays the same
+        orbitControls.update();                          // Apply it
+
 
 
 
@@ -65,36 +63,31 @@ function main() {
     scene.add(ground);
     ground.rotateX(UTIL.degToRad(90));
 
-    const seesaw = new Seesaw();
-    scene.add(seesaw);
-    seesaw.position.set(6, 0, -7);
-
-    const swings = new SwingSet();
-    scene.add(swings);
-    swings.position.set(-10, 0, -7);
-    swings.rotateY(UTIL.degToRad(30));
-
     const pig = new Pig();
     pig.position.set(-2, 0, 1); 
     scene.add(pig);
 
-    const streetLight = new StreetLight();
+    const streetLight = new moonlight();
     scene.add(streetLight);
-    streetLight.position.set(-4, 0, 6);
+    streetLight.position.set(-11, 0, -3);
 
+    const mtlLoader = new MTLLoader();
+    mtlLoader.setPath('./assets/85-cottage_obj/');
 
-	mtlLoader.load("assets/12222_Cat_v1_l3.mtl", mtl => {
-		mtl.preload();
-		objLoader.setMaterials(mtl);
-		objLoader.load("assets/12222_Cat_v1_l3.obj", root => {
-			scene.add(root);
-			root.scale.set(0.05, 0.05, 0.05);
-			root.scale.multiplyScalar(0.5);
-			root.position.set(2,0,-2);
-			root.rotateX(UTIL.degToRad(270));
-		});
-	});
+    mtlLoader.load('cottage_obj.mtl', (materials) => {
+    materials.preload();
 
+    const objLoader = new OBJLoader();
+    objLoader.setMaterials(materials);
+    objLoader.setPath('./assets/85-cottage_obj/');
+
+    objLoader.load('cottage_obj.obj', (object) => {
+        object.position.set(6, 0, -13);    // Change as needed
+        object.scale.set(0.3, 0.3, 0.3);   // Downscale if too large
+        scene.add(object);
+        console.log('Cottage loaded!');
+    });
+    });
 
 
     const treeTexture = textureLoader.load("assets/tree.png");
@@ -175,6 +168,13 @@ class ParkBench extends THREE.Group {
     scene.add(bench1);
 
 
+    const windmill = new FancyWindmill();
+    windmill.position.set(-10, 0, -9);
+    scene.add(windmill);
+
+
+
+
     // Keep global references
     window.directionalLight = directionalLight;
     window.pointLight = pointLight;
@@ -206,8 +206,6 @@ class ParkBench extends THREE.Group {
 
 
 
-
-
 	// Add path/walkway
 	const pathMaterial = new THREE.MeshStandardMaterial({
 		color: 0x696969,
@@ -223,41 +221,38 @@ class ParkBench extends THREE.Group {
 	path.position.set(0, 0.01, 0);
 	scene.add(path);
 
+    function animateWindmill() {
+    windmillBlades.rotation.z += 0.05;
+    }
+
+
+
+
     requestAnimationFrame(tick);
 
     let prevTime = 0;
 
-    // function tick(time) {
-    //     time /= 1000;
+  
 
-    //     seesaw.animate(time);
-    //     streetLight.animate(time - prevTime);
-    //     fountain.animate(time);  
-        
-    //     renderer.render(scene, camera);
-    //     prevTime = time;
-    //     requestAnimationFrame(tick);
 
-        
-    // }
 
-    function tick(time) {
+  function tick(time) {
     time /= 1000;
-
-    seesaw.animate(time);
+    const deltaTime = time - prevTime;
     streetLight.animate(time - prevTime);
-    fountain.animate(time);  
+    fountain.animate(time);
 
-    // // 🔍 Log camera position and rotation (once every second)
-    // if (Math.floor(time) !== Math.floor(prevTime)) {
-    //     console.log(`Camera position: ${camera.position.x.toFixed(2)}, ${camera.position.y.toFixed(2)}, ${camera.position.z.toFixed(2)}`);
-    //     console.log(`Camera rotation: ${camera.rotation.x.toFixed(2)}, ${camera.rotation.y.toFixed(2)}, ${camera.rotation.z.toFixed(2)}`);
-    // }
 
-    renderer.render(scene, camera);
+  windmill.animate(deltaTime);
+    renderScene.render(scene, camera);
     prevTime = time;
     requestAnimationFrame(tick);
+
+    console.log('Camera position:', camera.position);
+    console.log('OrbitControls target:', orbitControls.target);
+
 }
+
 
 }
 
