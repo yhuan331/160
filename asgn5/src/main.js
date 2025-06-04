@@ -11,8 +11,8 @@ import FancyWindmill from "./fancyWindmill.js";
 function main() {
   // === SETUP RENDERER, SCENE, CAMERA ===
   const canvas = document.getElementById("canvas");
-  const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
-  renderer.shadowMap.enabled = true;
+  const render = new THREE.WebGLRenderer({ antialias: true, canvas });
+  render.shadowMap.enabled = true;
 
   const scene = new THREE.Scene();
 
@@ -26,23 +26,26 @@ function main() {
   const textureLoader = new THREE.TextureLoader();
 
   // === LIGHTING ===
-  const directionalLight = new THREE.DirectionalLight(0xABD3E1, 5);
-  directionalLight.position.set(15, 20, 10);
-  directionalLight.castShadow = true;
-  directionalLight.shadow.camera.left = directionalLight.shadow.camera.bottom = -25;
-  directionalLight.shadow.camera.right = directionalLight.shadow.camera.top = 25;
-  directionalLight.shadow.camera.far = 50;
-  scene.add(directionalLight);
+  const directionalLight = new THREE.DirectionalLight(0xABD3E1, 6);
+    directionalLight.position.set(18, 24, 12);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.camera.left = -30;
+    directionalLight.shadow.camera.right = 30;
+    directionalLight.shadow.camera.top = 30;
+    directionalLight.shadow.camera.bottom = -30;
+    directionalLight.shadow.camera.far = 60;
+    scene.add(directionalLight);
 
-  const pointLight = new THREE.PointLight(0xff9900, 2, 100);
-  pointLight.position.set(5, 5, 5);
-  scene.add(pointLight);
+    const pointLight = new THREE.PointLight(0xff9900, 2.5, 120);
+    pointLight.position.set(6, 6, 6);
+    scene.add(pointLight);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
-  scene.add(ambientLight);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+    scene.add(ambientLight);
 
-  const hemiLight = new THREE.HemisphereLight(0x87CEEB, 0x8B4513, 1.5);
-  scene.add(hemiLight);
+    const hemiLight = new THREE.HemisphereLight(0x87CEEB, 0x8B4513, 1.7);
+    scene.add(hemiLight);
+
 
   // === SKYBOX ===
   const cubeTextureLoader = new THREE.CubeTextureLoader();
@@ -75,9 +78,9 @@ function main() {
   fountain.scale.set(0.5, 0.5, 0.5);
   scene.add(fountain);
 
-  const streetLight = new moonlight();
-  streetLight.position.set(-11, 0, -3);
-  scene.add(streetLight);
+  const moonlight = new moonlight();
+  moonlight.position.set(-11, 0, -3);
+  scene.add(moonlight);
 
   const windmill = new FancyWindmill();
   windmill.position.set(-10, 0, -9);
@@ -161,8 +164,8 @@ function main() {
   });
 
   document.getElementById("toggleLamp").addEventListener("click", () => {
-    streetLight.lampLight.visible = !streetLight.lampLight.visible;
-    console.log(`Lamp is now ${streetLight.lampLight.visible ? "ON" : "OFF"}`);
+    moonlight.lampLight.visible = !moonlight.lampLight.visible;
+    console.log(`Lamp is now ${moonlight.lampLight.visible ? "ON" : "OFF"}`);
   });
 
   document.getElementById("toggleHemi").addEventListener("click", () => {
@@ -181,11 +184,11 @@ function main() {
     time /= 1000;
     const deltaTime = time - prevTime;
 
-    streetLight.animate(deltaTime);
+    moonlight.animate(deltaTime);
     fountain.animate(time);
     windmill.animate(deltaTime);
 
-    renderer.render(scene, camera);
+    render.render(scene, camera);
     prevTime = time;
     requestAnimationFrame(tick);
 
